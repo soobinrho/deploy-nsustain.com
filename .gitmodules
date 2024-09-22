@@ -1,0 +1,9 @@
+[submodule "nsustain.com"]
+	path = nsustain.com
+	url = https://github.com/Nsustain/nsustain.com
+[submodule "BeeMovr"]
+	path = BeeMovr
+	url = https://github.com/soobinrho/BeeMovr
+[submodule "GoodLifeFarms"]
+	path = GoodLifeFarms
+	url = https://github.com/soobinrho/GoodLifeFarms
