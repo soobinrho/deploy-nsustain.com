@@ -106,12 +106,16 @@ services:
 
 volumes:
   flarum-data:
+    external: true
     name: flarum-data
   letsencrypt-data:
+    external: true
     name: letsencrypt-data
   letsencrypt-lockfiles:
+    external: true
     name: letsencrypt-lockfiles
   mariadb-data:
+    external: true
     name: mariadb-data
 
 # "The presence of these objects is sufficient to define them"
