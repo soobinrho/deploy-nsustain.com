@@ -16,10 +16,11 @@
 | ***Tarsnap*** | One of the most, if not the most, secure backup service. I use this for regular backups of my servers. |
 
 > [!NOTE]  
-> syslog is a plaintext logging system, [1] while journald is a binary
-> logging system. journald was created more recently, but I chose to
-> use syslog-ng because syslog is said to be better at remote logging
-> at central logging & monitoring server than journald.
+> `syslog` is a plaintext logging system,<sup>[1]</sup> while `journald` is a binary
+> logging system. `journald` was created more recently, but I chose to
+> use `syslog` (rsyslog) because `syslog` is said to be simpler at
+> spooling and saving logs to a centralized logging server with TLS/SSL encryption.
+> 
 > [1] https://datatracker.ietf.org/doc/html/rfc5424
 
 <br>
@@ -28,9 +29,9 @@
 
 | ***Program*** | ***Purpose*** |
 | ------------- | ------------- |
-| Nsustain<sup>[1]</sup> | Help the e[N]vironment and [sustain]ability by coding for anyone who works in the field. Open to any programmer who wants to contribute to environmental sustainability. |
-| BeeMovr<sup>[2]</sup> | Help beekeepers by coding whatever they need for their bees. |
-| Good Life Farms<sup>[3]</sup> | Help local producers (farmers, beekeeprs, florists, and so on) by giving them a free, low-maintenance platform to sell their goods to local consumers. Deisnged to be as self-sustainable as possible: it's built with Google Sheets and Google Forms instead of fancy, expensive databases. |
+| ***Nsustain***<sup>[1]</sup> | Help the e[N]vironment and [sustain]ability by coding for anyone who works in the field. Open to any programmer who wants to contribute to environmental sustainability. |
+| ***BeeMovr***<sup>[2]</sup> | Help beekeepers by coding whatever they need for their bees. |
+| ***Good Life Farms***<sup>[3]</sup> | Help local producers (farmers, beekeeprs, florists, and so on) by giving them a free, low-maintenance platform to sell their goods to local consumers. Deisnged to be as self-sustainable as possible: it's built with Google Sheets and Google Forms instead of fancy, expensive databases. |
 ```
 [1] https://nsustain.com
 [2] https://BeeMovr.nsustain.com
