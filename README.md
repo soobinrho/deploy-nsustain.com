@@ -12,7 +12,7 @@
 | ***Program*** | ***Purpose*** |
 | ---- | ---- |
 | ***Hetzner*** | I use this for hosting my servers. Main applications server = 3 vCPU, 4GB RAM, 80GB disk. Security logging and monitoring server = 2 vCPU, 4GB RAM, 40GB disk. |
-| ***Cloudflare Tunnel*** | Cloudflare Tunnel acts as a reverse proxy first between my server and Cloudflare's nearest data center and thereafter between any user that wants to connect to my server and the Cloudflare data center. |
+| ***Cloudflare Tunnel*** | Cloudflare Tunnel acts as a reverse proxy first between my server and Cloudflare's nearest data center and thereafter from any user that wants to connect to my server to the Cloudflare data center. |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." I use this for collecting all my logs in my centralized logging server. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup service. I use this for regular backups of my servers. |
 
@@ -20,9 +20,12 @@
 > To encrypt the network traffic with https, one commonly-used way is to obtain an SSL/TLS certificate from certificate authorities such as Let's Encrypt.
 > Here, however, I opted to use Cloudflare Tunnel.
 > It has two advantages:
-> (a) ease of use because I just need to add `cloudflared` to my Docker Compose `compose.yaml` and configure the rest from Cloudflare's settings website, and
-> (b) security it provides for both the user and my server as it automatically encrypts all web traffic, which I think is easier than setting up a SSL/TLS certificate myself and configuring a separate `nginx.conf` for that use case.
->
+> (a) Ease of use.
+> To implement it, I just need to add it to my Docker Compose `compose.yaml`, and configure the rest from the Cloudflare Tunnel dashboard.
+> (b) Automatic encryption of all traffic.
+> Setting up a Cloudflare Tunnel provides automatic encryption of all web traffic, which to me is a little bit simpler than setting up a SSL/TLS certificate myself and having to configure a new `nginx.conf` for that use case.
+
+> [!NOTE]  
 > `syslog` is a plaintext logging system,<sup>[1]</sup> while `journald` is a binary
 > logging system. `journald` was created more recently, but I chose to
 > use `syslog` (rsyslog) because `syslog` is said to be simpler at
@@ -30,7 +33,6 @@
 > 
 > [1] https://datatracker.ietf.org/doc/html/rfc5424
 
-| ***Cloudflare Tunnel*** | 
 <br>
 
 ## Applications
@@ -255,10 +257,8 @@ SSL also digitally signs data in order to provide data integrity, verifying that
 
 - What is Cloudflare Tunnel? https://www.cloudflare.com/products/tunnel/
 
-"The Tunnel daemon [`cloudflared`] creates an encrypted tunnel between your origin web server and Cloudflare’s nearest data center, all without opening any public inbound ports."
+"The Tunnel daemon [cloudflared] creates an encrypted tunnel between your origin web server and Cloudflare’s nearest data center, all without opening any public inbound ports."
 Then, all requests to the origin web server is handled through the Cloudflare data center, which means the identity of the origin web server or even its IP address is hidden and therefore shielded from DDoS attacks, brute force login attacks, and so on.
 
-
-
-
 <br>
+
