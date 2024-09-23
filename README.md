@@ -245,6 +245,17 @@ sudo lnav
 
 - What are network protocols? https://www.cloudflare.com/learning/network-layer/what-is-a-protocol/
 
+"The Internet Protocol (IP) is responsible for routing data by indicating where data packets come from and what their destination is.
+IP makes network-to-network communications possible.
+Hence, IP is considered a network layer (layer 3) protocol."
+
+"As another example, the Transmission Control Protocol (TCP) ensures that the transportation of packets of data across networks goes smoothly.
+Therefore, TCP is considered a transport layer (layer 4) protocol ...
+TCP is a transport layer protocol that ensures reliable data delivery.
+TCP is meant to be used with IP, and the two protocols are often referenced together as TCP/IP."
+
+"The Hypertext Transfer Protocol (HTTP) is the foundation of the World Wide Web, the Internet that most users interact with. It is used for transferring data between devices. HTTP belongs to the application layer (layer 7), because it puts data into a format that applications (e.g. a browser) can use directly, without further interpretation." HTTPS (HTTP Secure) is basically SSL/TLS on top of HTTP.
+
 - What is Transport Layer Security (TLS)? https://www.cloudflare.com/learning/ssl/transport-layer-security-tls/
 
 Secure Sockets Layer (SSL) was invented in 1995 by Netscape, and was suceeded by TLS in 1999 by the Internet Engineering Task Force (IETF).
