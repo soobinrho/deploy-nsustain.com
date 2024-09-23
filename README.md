@@ -42,6 +42,7 @@
 
 
 #### Deployment Code Snippets
+
 ```bash
 # ---------------------------------------------------------------------
 # 1. Create a VPS at Hetzner and setup an SSH access:
@@ -226,5 +227,16 @@ sudo snap install -y lnav
 sudo lnav
 
 ```
+
+<br>
+
+#### Extra Readings
+
+- What are network protocols? https://www.cloudflare.com/learning/network-layer/what-is-a-protocol/
+
+- What is Transport Layer Security (TLS)? https://www.cloudflare.com/learning/ssl/transport-layer-security-tls/
+
+Secure Sockets Layer (SSL) was invented in 1995 by Netscape, and was suceeded by TLS in 1995.
+Websites that use the Hypertext transfer protocol secure (HTTPS) protocol are using TLS/SSL too.
 
 <br>
