@@ -1,7 +1,11 @@
 # Nsustain.com Deployment
 
+<br>
+
 > Nsustain is for anyone who loves the e[N]vironment and [sustain]ability.
 > Anyone is welcome to join us if you'd like to volunteer to code for people who work in the field and need our help in solving a problem.
+
+<br>
 
 ## Infrastructure
 
@@ -18,20 +22,25 @@
 > at central logging & monitoring server than journald.
 > [1] https://datatracker.ietf.org/doc/html/rfc5424
 
+<br>
+
 ## Applications
 
 | ***Program*** | ***Purpose*** |
 | ------------- | ------------- |
-| Nsustain | Help the e[N]vironment and [sustain]ability by coding for anyone who works in the field. Open to any programmer who wants to contribute to environmental sustainability. |
-| BeeMovr | Help beekeepers by coding whatever they need for their bees. |
-| Good Life Farms | Help local producers (farmers, beekeeprs, florists, and so on) by giving them a free, low-maintenance platform to sell their goods to local consumers. Deisnged to be as self-sustainable as possible: it's built with Google Sheets and Google Forms instead of fancy, expensive databases. |
+| Nsustain<sup>[1]</sup> | Help the e[N]vironment and [sustain]ability by coding for anyone who works in the field. Open to any programmer who wants to contribute to environmental sustainability. |
+| BeeMovr<sup>[2]</sup> | Help beekeepers by coding whatever they need for their bees. |
+| Good Life Farms<sup>[3]</sup> | Help local producers (farmers, beekeeprs, florists, and so on) by giving them a free, low-maintenance platform to sell their goods to local consumers. Deisnged to be as self-sustainable as possible: it's built with Google Sheets and Google Forms instead of fancy, expensive databases. |
+```
+[1] https://nsustain.com
+[2] https://BeeMovr.nsustain.com
+[3] https://GoodLifeFarms.nsustain.com
+```
 
-| ***Program*** | ***Domain*** |
-| ------------- | ------------- |
-| Nsustain | https://nsustain.com |
-| BeeMovr | https://BeeMovr.nsustain.com |
-| Good Life Farms | https://GoodLifeFarms.nsustain.com |
+<br>
 
+
+#### Deployment Code Snippets
 ```bash
 # ---------------------------------------------------------------------
 # 1. Create a VPS at Hetzner and setup an SSH access:
@@ -216,3 +225,5 @@ sudo snap install -y lnav
 sudo lnav
 
 ```
+
+<br>
