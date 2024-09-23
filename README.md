@@ -284,3 +284,16 @@ The server would be able to decrypt the random encrypted string only if the serv
 Then, all requests to the origin web server is handled through the Cloudflare data center, which means the identity of the origin web server or even its IP address is hidden and therefore shielded from DDoS attacks, brute force login attacks, and so on.
 
 <br>
+
+- What is network tunneling? https://www.cloudflare.com/learning/network-layer/what-is-tunneling/
+
+"Tunneling works by encapsulating packets: wrapping packets inside of other packets.
+(Packets are small pieces of data that can be re-assembled at their destination into a larger file.)
+Tunneling is often used in virtual private networks (VPNs). It can also set up efficient and secure connections between networks."
+
+"Many VPNs use the IPsec protocol suite.
+IPsec is a group of protocols that run directly on top of IP at the network layer.
+Network traffic in an IPsec tunnel is fully encrypted, but it is decrypted once it reaches either the network or the user device ... 
+Another protocol in common use for VPNs is Transport Layer Security (TLS)."
+
+<br>
