@@ -32,11 +32,11 @@
 | ***Nsustain***<sup>[1]</sup> | Help the e[N]vironment and [sustain]ability by coding for anyone who works in the field. Open to any programmer who wants to contribute to environmental sustainability. |
 | ***BeeMovr***<sup>[2]</sup> | Help beekeepers by coding whatever they need for their bees. |
 | ***Good Life Farms***<sup>[3]</sup> | Help local producers (farmers, beekeeprs, florists, and so on) by giving them a free, low-maintenance platform to sell their goods to local consumers. Deisnged to be as self-sustainable as possible: it's built with Google Sheets and Google Forms instead of fancy, expensive databases. |
-```
-[1] https://nsustain.com
-[2] https://BeeMovr.nsustain.com
-[3] https://GoodLifeFarms.nsustain.com
-```
+
+<sub>[1] https://nsustain.com</sub><br>
+<sub>[2] https://BeeMovr.nsustain.com</sub><br>
+<sub>[3] https://GoodLifeFarms.nsustain.com</sub><br>
+
 
 <br>
 
