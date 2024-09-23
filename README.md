@@ -256,6 +256,8 @@ TCP is meant to be used with IP, and the two protocols are often referenced toge
 
 "The Hypertext Transfer Protocol (HTTP) is the foundation of the World Wide Web, the Internet that most users interact with. It is used for transferring data between devices. HTTP belongs to the application layer (layer 7), because it puts data into a format that applications (e.g. a browser) can use directly, without further interpretation." HTTPS (HTTP Secure) is basically SSL/TLS on top of HTTP.
 
+<br>
+
 - What is Transport Layer Security (TLS)? https://www.cloudflare.com/learning/ssl/transport-layer-security-tls/
 
 Secure Sockets Layer (SSL) was invented in 1995 by Netscape, and was suceeded by TLS in 1999 by the Internet Engineering Task Force (IETF).
@@ -274,8 +276,7 @@ Then, the client "authenticates the identity of the server ... via the SSL certi
 The client encrypts a random string using the server's public key.
 The server would be able to decrypt the random encrypted string only if the server actually has the private key to the public key previously provided.
 
-
-
+<br>
 
 - What is Cloudflare Tunnel? https://www.cloudflare.com/products/tunnel/
 
@@ -283,4 +284,3 @@ The server would be able to decrypt the random encrypted string only if the serv
 Then, all requests to the origin web server is handled through the Cloudflare data center, which means the identity of the origin web server or even its IP address is hidden and therefore shielded from DDoS attacks, brute force login attacks, and so on.
 
 <br>
-
