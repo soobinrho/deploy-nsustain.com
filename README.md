@@ -248,9 +248,9 @@ sudo lnav
 - What is Transport Layer Security (TLS)? https://www.cloudflare.com/learning/ssl/transport-layer-security-tls/
 
 Secure Sockets Layer (SSL) was invented in 1995 by Netscape, and was suceeded by TLS in 1995 by the Internet Engineering Task Force (IETF).
-Websites that use the Hypertext transfer protocol secure (HTTPS) protocol are using TLS/SSL too.
+Websites that use the Hypertext transfer protocol secure (HTTPS) protocol are using TLS/SSL under the hood.
 "HTTPS is an implementation of TLS encryption on top of the HTTP protocol."
-The term SSL and TLS are used interchangeably, and in fact, TLS 1.0 was initially just SSL 3.1, but the name was changed when IETF took over the control.
+The term SSL and TLS are used interchangeably, and in fact, TLS 1.0 was initially just SSL 3.1, but the name was changed to signify the change of ownership from Netscape to IETF in 1995.
 
 SSL/TLS encrypts the data it transmits.
 Moreover, "SSL initiates an authentication process called a handshake between two communicating devices to ensure that both devices are really who they claim to be.
