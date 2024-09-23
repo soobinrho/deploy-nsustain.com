@@ -11,7 +11,7 @@
 
 | ***Program*** | ***Purpose*** |
 | ---- | ---- |
-| ***Hetzner*** | I use this for hosting my servers. Main applications server = 3 vCPU, 4GB RAM, 80GB disk. Security logging and monitoring server = 2 vCPU, 4GB RAM, 40GB disk. |
+| ***Hetzner*** | Hetzner is one of the best VPS service providers in the world; it's affordable and pleasant to use. I have two servers -- main applicatoin server with 3 vCPU, 4GB RAM, and 80GB SSD, and `rsyslog` server with 2 vCPU, 2GB RAM, and 40GB SSD. |
 | ***Cloudflare Tunnel*** | Cloudflare Tunnel acts as a reverse proxy first between my server and Cloudflare's nearest data center and thereafter from any user that wants to connect to my server to the Cloudflare data center. |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." I use this for collecting all my logs in my centralized logging server. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup service. I use this for regular backups of my servers. |
