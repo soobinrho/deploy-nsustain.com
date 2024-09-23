@@ -3,7 +3,7 @@
 <br>
 
 > Nsustain is for anyone who loves the e[N]vironment and [sustain]ability.
-> Anyone is welcome to join us if you'd like to volunteer to code for people who work in the field and need our help in solving a problem.
+> Anyone is welcome to join us if you'd like to volunteer to code for people who work in the field and write something that will have a direct impact.
 
 <br>
 
