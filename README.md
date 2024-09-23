@@ -14,6 +14,7 @@
 | ***Hetzner*** | Hetzner is one of the best VPS service providers in the world; it's affordable and pleasant to use. I have two servers -- main applicatoin server with 3 vCPU, 4GB RAM, and 80GB SSD, and `rsyslog` server with 2 vCPU, 2GB RAM, and 40GB SSD. |
 | ***Cloudflare Tunnel*** | Cloudflare Tunnel acts as a reverse proxy first between my server and Cloudflare's nearest data center and thereafter from any user that wants to connect to my server to the Cloudflare data center. |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." I use this for collecting all my logs in my centralized logging server. |
+| ***stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." I use this for encrypting all my rsyslog transmissions. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup service. I use this for regular backups of my servers. |
 
 > [!NOTE]  
@@ -254,6 +255,15 @@ The term SSL and TLS are used interchangeably, and in fact, TLS 1.0 was initiall
 SSL/TLS encrypts the data it transmits.
 Moreover, "SSL initiates an authentication process called a handshake between two communicating devices to ensure that both devices are really who they claim to be.
 SSL also digitally signs data in order to provide data integrity, verifying that the data is not tampered with before reaching its intended recipient."
+
+"TLS handskaes occur after a TCP connection has been opened via a TCP handshake."
+First, TLS handshake determines which TLS version is used (TLS 1.0 released in 1999, TLS 1.1 in 2006, TLS 1.2 in 2008 , TLS 1.3 in 2018) and which cipher suits are used.
+TLS 1.3 by the way no longer uses the insecure RSA algorithm and instead implements more secure cipher suits (algorithms the protocol uses for encryption keys and session keys); also, TLS 1.3 simplified its handshaking steps, so it performs faster than earlier versions.
+Then, the client "authenticates the identity of the server ... via the SSL certificate authroity's digital signature," and the server's public key, which is included in its TLS certificate.
+The client encrypts a random string using the server's public key.
+The server would be able to decrypt the random encrypted string only if the server actually has the private key to the public key previously provided.
+
+via the server's public key and 
 
 - What is Cloudflare Tunnel? https://www.cloudflare.com/products/tunnel/
 
