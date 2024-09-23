@@ -263,7 +263,8 @@ Then, the client "authenticates the identity of the server ... via the SSL certi
 The client encrypts a random string using the server's public key.
 The server would be able to decrypt the random encrypted string only if the server actually has the private key to the public key previously provided.
 
-via the server's public key and 
+
+
 
 - What is Cloudflare Tunnel? https://www.cloudflare.com/products/tunnel/
 
