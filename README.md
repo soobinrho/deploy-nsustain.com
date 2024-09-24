@@ -119,6 +119,7 @@ curl https://ipinfo.io/ip
 # Allow inbound traffic with port 443  TCP/UDP (Cloudflare Tunnel)
 # Allow inbound traffic with port 80   TCP/UDP (HTTP)
 # Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
+sudo ufw reset
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow 7844,443,80,22/tcp
@@ -128,6 +129,7 @@ sudo ufw enable
 # [Logging and Monitoring Server] On terminal, configure ufw.
 # Allow inbound traffic with port 6514 TCP/UDP (rsyslog & stunnel TLS)
 # Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
+sudo ufw reset
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow 6514,22/tcp
