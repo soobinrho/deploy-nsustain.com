@@ -126,11 +126,16 @@ sudo systemctl enable rsyslog
 sudo vim /etc/rsyslog.conf
 ```
 ```
+# ---------------------------------------------------------------------
+# Configure rsyslog to listen and receive remote logs.
+# ---------------------------------------------------------------------
 module(load="imtcp")
 input(type="imtcp" port="514")
 
 $template FILENAME,"/var/log/%hostname%/%$YEAR%%$MONTH%%$DAY%_%PROGRAMNAME%.log"
 *.* ?FILENAME
+
+if ($msg contains " nsustain ") then { Action (type="omfile" File="/var/log/nsustain/%$YEAR%%$MONTH%$DAY%_noName.log") stop }
 ```
 ```bash
 # Configure logrotate so that logs don't take too much space.
