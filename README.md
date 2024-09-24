@@ -40,7 +40,7 @@
 
 <br>
 
-#### Deployment Code Snippets
+#### Deployment Code
 
 ```bash
 # ---------------------------------------------------------------------
@@ -105,7 +105,7 @@ ssh-keygen -t ed25519 -C "name@example.com"
 # Copy and paste the public key to github.com repo - Code - SSH .
 vim ~/.ssh/id_ed25519.pub
 
-# How to check the https header on command line.
+# How to check the https header returned in the network packet.
 curl --insecure -vvI https://nsustain.com 2>&1
 
 # -------------------------------------------------------------------
