@@ -11,10 +11,10 @@
 
 | ***Program*** | ***Purpose*** |
 | ---- | ---- |
-| ***Hetzner*** | One of the best VPS service providers in the world; it's affordable and pleasant to use. I have two servers -- main applicatoin server with 3 vCPU, 4GB RAM, and 80GB SSD, and `rsyslog` server with 2 vCPU, 2GB RAM, and 40GB SSD. |
+| ***Hetzner*** | One of the best VPS service providers in the world; it's affordable and pleasant to use. Both my application server and logging server are hosted here. |
 | ***Cloudflare Tunnel*** | A reverse proxy first between my server and Cloudflare's nearest data center and thereafter from any user that wants to connect to my server to the Cloudflare data center. |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." I use `rsyslog` for aggregating all log entries (system logs, Docker container logs, etc) in my application server and relaying them to my logging and monitoring server. |
-| ***stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." Although `rsyslog` supports SSL/TLS, it's only single-threaded.<sup>[1]</sup> Using `stunnel`, all my `rsyslog` transmissions are encrypted and multi-threaded. |
+| ***Stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." Although `rsyslog` supports SSL/TLS, it's only single-threaded.<sup>[1]</sup> Using `Stunnel`, all my `rsyslog` transmissions are encrypted and multi-threaded. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup service. I use `Tarsnap` for regular backups of my servers. |
 
 <sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
@@ -42,16 +42,15 @@
 
 #### Deployment Code
 
+> Application Server - 3 vCPU, 4GB RAM, 80GB SSD, Ubuntu LTS
+> Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD, Ubuntu LTS
+
 ```bash
 # ---------------------------------------------------------------------
-# 1. Create a VPS at Hetzner and setup an SSH access:
-#      https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/to-existing-droplet/
+# 1. [Both] Add a non-root user and configure sshd for security.
 # ---------------------------------------------------------------------
-
-# How to configure sshd after booting up a fresh VPS.
-# ===================================================
-# Source:
-#   https://www.digitalocean.com/community/tutorials/ssh-essentials-working-with-ssh-servers-clients-and-keys
+# [Both] here means run the following commands in both the application
+# server and the monitoring server.
 adduser soobinrho
 adduser soobinrho sudo
 
@@ -75,46 +74,11 @@ PasswordAuthentication no
 PermitRootLogin no
 
 # Restart SSH
-sudo service sshd restart    # Fedora
-sudo service ssh restart    # Ubuntu
-
-# How I set up my client-side SSH configs.
-# ========================================
-# Source:
-#   https://unix.stackexchange.com/questions/708206/ssh-timeout-does-not-happen-and-not-disconnect
-
-# How to configure the SSH client to time-out less frequently.
-cat >> ~/.ssh/config
-Host *
-  ServerAliveInterval 15
-  ServerAliveCountMax 3
-
-# How to create an alias so that we can `ssh myserver` instead of
-# `ssh main@ip_address` everytime.
-cat >> ~/.ssh/config
-Host myserver
-    HostName ip_address
-    User main
-
-# How to setup public / private key access for private GitHub repo.
-# =================================================================
-# Source:
-#   https://leangaurav.medium.com/setup-ssh-key-with-git-github-clone-private-repo-using-ssh-d983ab7bb956
-ssh-keygen -t ed25519 -C "name@example.com"
-
-# Copy and paste the public key to github.com repo - Code - SSH .
-vim ~/.ssh/id_ed25519.pub
-
-# How to check the https header returned in the network packet.
-curl --insecure -vvI https://nsustain.com 2>&1
+sudo service ssh restart
 
 # -------------------------------------------------------------------
-# 2. Configure firewall.
+# 2. [Application Server] Configure firewall.
 # -------------------------------------------------------------------
-# How to get your public IP address.
-curl https://ipinfo.io/ip
-
-# [Application Server] On terminal, configure ufw.
 # Allow inbound traffic with port 7844 TCP/UDP (Cloudflare Tunnel)
 # Allow inbound traffic with port 443  TCP/UDP (Cloudflare Tunnel)
 # Allow inbound traffic with port 80   TCP/UDP (HTTP)
@@ -126,8 +90,17 @@ sudo ufw allow 7844,443,80,22/tcp
 sudo ufw allow 7844,443,80,22/udp
 sudo ufw enable
 
-# [Logging and Monitoring Server] On terminal, configure ufw.
-# Allow inbound traffic with port 6514 TCP/UDP (rsyslog & stunnel TLS)
+# Confirm current firewall rules.
+sudo ufw status
+
+# FYI, whenever a service has a designated port - e.g. 22 for SSH -
+# it almost always uses just the TCP protocol, but it's often a good
+# practice to open accept both TCP and UDP as future reserve.
+
+# -------------------------------------------------------------------
+# 3. [Logging Server] Configure firewall.
+# -------------------------------------------------------------------
+# Allow inbound traffic with port 6514 TCP/UDP (rsyslog & Stunnel TLS)
 # Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
 sudo ufw reset
 sudo ufw default deny incoming
@@ -140,21 +113,109 @@ sudo ufw enable
 sudo ufw status
 
 # -------------------------------------------------------------------
-# 3. Configure rsyslog server and clients.
+# 4. [Logging Server] Configure SSL/TLS encrypted logging.
 # -------------------------------------------------------------------
-# Configure the logging and monitoring server.
-# ============================================
 sudo systemctl start rsyslog
 sudo systemctl enable rsyslog
 
-# TODO: Procedures for the rsyslog server.
+# Append to the end of rsyslog config file.
+# Source:
+#   https://www.rsyslog.com/receiving-messages-from-a-remote-system/
+sudo vim /etc/rsyslog.conf
+```
+```
+module(load="imtcp")
+input(type="imtcp" port="514")
 
-# Configure the client's Docker settings.
-# =======================================
+$template FILENAME,"/var/log/%hostname%/%$YEAR%%$MONTH%%$DAY%_%PROGRAMNAME%.log"
+*.* ?FILENAME
+```
+```bash
+# Configure logrotate so that logs don't take too much space.
+# This config means compress `daily` and keep `365` copies of it,
+# so there will be 365 days worth of logs, and the oldest ones will
+# start to get deleted once 366th day is reached.
+sudo vim /etc/logrotate.d/nsustain
+```
+```
+/var/log/nsustain/*.log {
+    daily
+    rotate 365
+    copytruncate
+    compress
+    delaycompress
+    notifempty
+    missingok
+}
+```
+```bash
+# Configure Stunnel to encrypt all incoming logs with SSL/TLS.
+# Source:
+#   https://www.stunnel.org/static/stunnel.html
+sudo apt install -y stunnel
+sudo vim /etc/stunnel/stunnel.conf
+```
+```
+; It is recommended to drop root privileges if stunnel is started by root
+;setuid = stunnel4
+;setgid = stunnel4
+
+; Debugging stuff (may be useful for troubleshooting)
+;foreground = yes
+;debug = info
+;output = /var/log/stunnel.log
+
+[rsyslog]
+cert=/etc/stunnel/logging_server_public_key.pem
+key=/etc/stunnel/logging_server_private_key.pem
+sslVersionMin=TLSv1.3
+accept=6514
+connect=127.0.0.1:514
+client=no
+```
+```bash
+# Generate a self-signed certificate for the logging server.
+cd /etc/stunnel
+sudo openssl req -nodes -x509 -newkey rsa:4096 -keyout logging_server_private_key.pem -out logging_server_public_key.pem -sha256 -days 36500 -subj "/C=US/ST=South Dakota/L=Sioux Falls/O=Nsustain/OU=Devs/CN=nsustain.com"
+
+# Add a systemd entry for Stunnel.
+# Source:
+#   http://kb.ictbanking.net/article.php?id=704
+sudo vim /usr/lib/systemd/system/stunnel.service
+```
+```
+[Unit]
+Description=TLS tunnel for network daemons
+After=syslog.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/stunnel /etc/stunnel/stunnel.conf
+ExecStop=/bin/kill -9 $(pgrep stunnel)
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+sudo systemctl enable stunnel
+sudo systemctl start stunnel
+sudo systemctl status stunnel
+sudo systemctl restart rsyslog
+
+# By the way, `sudo service rsyslog restart` works perfectly fine as
+# well. `service` = more high level abstraction than `systemctl`.
+
+# -------------------------------------------------------------------
+# 5. [Application Server] Configure SSL/TLS encrypted logging.
+# -------------------------------------------------------------------
+sudo systemctl start rsyslog
+sudo systemctl enable rsyslog
+
 # Change the Docker's default logging driver from json to syslog.
 sudo vim /etc/docker/daemon.json
-
-# Copy and paste | Start
+```
+```
 {
   "log-driver": "syslog",
   "log-opts": {
@@ -162,8 +223,8 @@ sudo vim /etc/docker/daemon.json
     "tag" : "docker/{{.Name}}"
   }
 }
-# Copy and paste | End
-
+```
+```bash
 # Restart docker.
 cd ~/deploy-nsustain.com
 docker compose down
@@ -173,67 +234,60 @@ docker compose up -d
 # Confirm Docker's logging driver is correctly configured to syslog.
 docker inspect <containerName> | grep -A 5 LogConfig
 
-# Configure logrotate so that logs don't take too much space.
-# This config means compress `daily` and keep `365` copies of it,
-# so there will be 365 days worth of logs, and the oldest ones will
-# start to get deleted once 366th day is reached.
-sudo vim /etc/logrotate.d/docker
-
-# Copy and paste | Start
-/var/log/docker/*.log {
-    daily
-    rotate 365
-    copytruncate
-    compress
-    delaycompress
-    notifempty
-    missingok
-}
-# Copy and paste | End
-
-# Configure the client's rsyslog configs.
-# =======================================
-# Source:
-#   https://chabik.com/rsyslog-and-docker/
-sudo mkdir /var/log/docker
-sudo chmod -R 0755 /var/log/docker
-sudo chown -R syslog:adm /var/log/docker
-sudo vim /etc/rsyslog.conf
-
-# Copy and paste | Start
-template(name="DockerLogFileName" type="list") {
-   constant(value="/var/log/docker/")
-   property(name="syslogtag" securepath="replace" regex.expression="docker/\\(.*\\)\\[" regex.submatch="1")
-   constant(value=".log")
-}
-
-if $programname == "docker" then {
-  if $syslogtag contains "docker/" then {
-    ?DockerLogFileName
-  } else {
-    action(type="omfile" file="/var/log/docker/no_tag.log")
-  }
-  stop
-}
-# Copy and paste | End
-
-# After restarting, the logs will go to /var/log/docker_all.log
-# By the way, `sudo service rsyslog restart` works perfectly fine as
-# well. `service` = more high level abstraction than `systemctl`.
-sudo systemctl restart rsyslog
-
 # How to check if rsyslog server is listening.
 echo "This is a test log message." | nc <server_ip> <port>
 
-# TODO: Use TCP protocol for logging in the central log server, and
-# enable SSL/TLS encryption through stunnel.
+# Append to the end of rsyslog config file.
 # Source:
-#   https://github.com/jmaas/rsyslog-configs
+#   https://www.rsyslog.com/sending-messages-to-a-remote-syslog-server/
+sudo vim /etc/rsyslog.conf
+```
+```
+*.*  action(type="omfwd" target="127.0.0.1" port="514" protocol="tcp"
+            action.resumeRetryCount="100"
+            queue.type="linkedList" queue.size="10000")
+```
+```bash
+
+# Configure logs to be sent to the centralized server with TLS 1.3
+# Source:
 #   https://www.rsyslog.com/doc/historical/stunnel.html
-#   https://www.linuxhowtos.org/Security/stunnel.htm
+sudo apt install -y stunnel
+sudo vim /etc/stunnel/stunnel.conf
+```
+```
+[rsyslog]
+sslVersionMin=TLSv1.3
+accept  = 127.0.0.1:514
+connect = <Logging server IP>:6514
+client=yes
+```
+```bash
+# Add a systemd entry for Stunnel.
+sudo vim /usr/lib/systemd/system/stunnel.service
+```
+```
+[Unit]
+Description=TLS tunnel for network daemons
+After=syslog.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/stunnel /etc/stunnel/stunnel.conf
+ExecStop=/bin/kill -9 $(pgrep stunnel)
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+sudo systemctl enable stunnel
+sudo systemctl start stunnel
+sudo systemctl status stunnel
+sudo systemctl restart rsyslog
 
 # ---------------------------------------------------------------------
-# 4. Run Docker Compose.
+# 6. [Application Server] Run Docker Compose to deploy Nsustain.
 # ---------------------------------------------------------------------
 git clone https://github.com/soobinrho/deploy-nsustain.com.git
 cd deploy-nsustain.com
@@ -241,8 +295,14 @@ docker compose build
 docker compose up -d
 
 # ---------------------------------------------------------------------
-# 5. Useful workflows.
+# 7. Useful workflows.
 # ---------------------------------------------------------------------
+# How to kill Stunnel for debugging purposes.
+sudo kill $(pgrep stunnel)
+
+# How to get your public IP address.
+curl https://ipinfo.io/ip
+
 # How to see which process is listening on port 80.
 sudo netstat -pna | grep 80
 
@@ -251,7 +311,6 @@ sudo snap install -y lnav
 
 # How to view /etc/var/syslog in pretty format.
 sudo lnav
-
 ```
 
 <br>
