@@ -112,6 +112,8 @@ sudo ufw enable
 # Confirm current firewall rules.
 sudo ufw status
 
+# Also, apply the same firewall rules on Hetzner firewall.
+
 # -------------------------------------------------------------------
 # 4. [Logging Server] Configure SSL/TLS encrypted logging.
 # -------------------------------------------------------------------
