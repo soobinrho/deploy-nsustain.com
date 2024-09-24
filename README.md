@@ -396,3 +396,7 @@ RFC 3164 (a.k.a. “BSD syslog” or “old syslog”) is an older syslog format
 Good indicators of an RFC 3164 syslog message are the absence of structured data and timestamps using an 'Mmm dd hh:mm:ss' format."
 
 <br>
+
+- How to view Linux logs https://www.digitalocean.com/community/tutorials/how-to-view-and-configure-linux-logs-on-ubuntu-debian-and-centos
+
+<br>
