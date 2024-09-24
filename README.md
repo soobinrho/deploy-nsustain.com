@@ -42,8 +42,10 @@
 
 #### Deployment Code
 
-> Application Server - 3 vCPU, 4GB RAM, 80GB SSD, Ubuntu LTS
-> Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD, Ubuntu LTS
+```
+Application Server - 3 vCPU, 4GB RAM, 80GB SSD. Ubuntu LTS
+Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS
+```
 
 ```bash
 # ---------------------------------------------------------------------
