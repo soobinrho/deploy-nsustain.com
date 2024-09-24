@@ -34,7 +34,7 @@
 > `syslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary
 > logging system. `journald` was created more recently, but I chose to
 > use `syslog` (rsyslog) because `syslog` is said to be simpler at
-> spooling and saving logs to a centralized logging server with SSL/TLS encryption.
+> spooling and saving logs to a centralized logging server.
 
 <sub>[2] https://datatracker.ietf.org/doc/html/rfc5424</sub>
 
@@ -109,12 +109,33 @@ vim ~/.ssh/id_ed25519.pub
 curl --insecure -vvI https://nsustain.com 2>&1
 
 # -------------------------------------------------------------------
-# 2. On Hetzner firewall settings, Allow any inbound IPv4 or IPv6 for
-#    port 80 and 443, but only allow your whitelisted IP address for
-#    incoming port 22 traffic.
+# 2. Configure firewall.
 # -------------------------------------------------------------------
 # How to get your public IP address.
 curl https://ipinfo.io/ip
+
+# [Application Server] On terminal, configure ufw.
+# Allow inbound traffic with port 7844 TCP/UDP (Cloudflare Tunnel)
+# Allow inbound traffic with port 443  TCP/UDP (Cloudflare Tunnel)
+# Allow inbound traffic with port 80   TCP/UDP (HTTP)
+# Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 7844,443,80,22/tcp
+sudo ufw allow 7844,443,80,22/udp
+sudo ufw enable
+
+# [Logging and Monitoring Server] On terminal, configure ufw.
+# Allow inbound traffic with port 6514 TCP/UDP (rsyslog & stunnel TLS)
+# Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 6514,22/tcp
+sudo ufw allow 6514,22/udp
+sudo ufw enable
+
+# Confirm current firewall rules.
+sudo ufw status
 
 # -------------------------------------------------------------------
 # 3. Configure rsyslog server and clients.
