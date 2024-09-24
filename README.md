@@ -14,8 +14,10 @@
 | ***Hetzner*** | One of the best VPS service providers in the world; it's affordable and pleasant to use. I have two servers -- main applicatoin server with 3 vCPU, 4GB RAM, and 80GB SSD, and `rsyslog` server with 2 vCPU, 2GB RAM, and 40GB SSD. |
 | ***Cloudflare Tunnel*** | A reverse proxy first between my server and Cloudflare's nearest data center and thereafter from any user that wants to connect to my server to the Cloudflare data center. |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." I use `rsyslog` for aggregating all log entries (system logs, Docker container logs, etc) in my application server and relaying them to my logging and monitoring server. |
-| ***stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." Although `rsyslog` supports SSL/TLS, it's only single-threaded. Using `stunnel`, all my `rsyslog` transmissions are encrypted and multi-threaded. |
+| ***stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." Although `rsyslog` supports SSL/TLS, it's only single-threaded.<sup>[1]</sup> Using `stunnel`, all my `rsyslog` transmissions are encrypted and multi-threaded. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup service. I use `Tarsnap` for regular backups of my servers. |
+
+<sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
 
 > [!NOTE]  
 > To encrypt the network traffic with https, one commonly-used way is to obtain an SSL/TLS certificate from certificate authorities such as Let's Encrypt.
