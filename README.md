@@ -19,6 +19,8 @@
 
 <sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
 
+<br>
+
 > [!NOTE]  
 > To encrypt the network traffic with https, one commonly-used way is to obtain an SSL/TLS certificate from certificate authorities such as Let's Encrypt.
 > Here, however, I opted to use Cloudflare Tunnel.
@@ -29,12 +31,12 @@
 > Setting up a Cloudflare Tunnel provides automatic encryption of all web traffic, which to me is a little bit simpler than setting up a SSL/TLS certificate myself and having to configure a new `nginx.conf` for that use case.
 
 > [!NOTE]  
-> `syslog` is a plaintext logging system,<sup>[1]</sup> while `journald` is a binary
+> `syslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary
 > logging system. `journald` was created more recently, but I chose to
 > use `syslog` (rsyslog) because `syslog` is said to be simpler at
 > spooling and saving logs to a centralized logging server with SSL/TLS encryption.
-> 
-> [1] https://datatracker.ietf.org/doc/html/rfc5424
+
+<sub>[2] https://datatracker.ietf.org/doc/html/rfc5424</sub>
 
 <br>
 
