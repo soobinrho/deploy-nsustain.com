@@ -380,3 +380,19 @@ Network traffic in an IPsec tunnel is fully encrypted, but it is decrypted once 
 Another protocol in common use for VPNs is Transport Layer Security (TLS)."
 
 <br>
+
+- How does logging work in Linux? https://www.loggly.com/ultimate-guide/linux-logging-basics/
+
+"The syslog service receives and processes syslog messages and listens for events by creating a socket located at /dev/log, which applications can write to.
+It can write messages to a local file or forward messages to a remote server.
+There are different syslog implementations, including rsyslogd and syslog-ng."
+
+"A syslog message is any log formatted in the syslog message format...
+The Syslog protocol (RFC 5424) is a transport protocol specifying how to transmit logs over a network...
+It uses port 514 for plaintext messages and port 6514 for encrypted messages."
+
+"While RFC 5424 is the current Syslog protocol, it’s not the only standard you’ll see in the wild.
+RFC 3164 (a.k.a. “BSD syslog” or “old syslog”) is an older syslog format still used by many devices...
+Good indicators of an RFC 3164 syslog message are the absence of structured data and timestamps using an 'Mmm dd hh:mm:ss' format."
+
+<br>
