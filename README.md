@@ -399,4 +399,45 @@ Good indicators of an RFC 3164 syslog message are the absence of structured data
 
 - How to view Linux logs https://www.digitalocean.com/community/tutorials/how-to-view-and-configure-linux-logs-on-ubuntu-debian-and-centos
 
+```bash
+# See who is logged in.
+who
+
+# See who logged in last.
+last
+
+# See when was a certain command last executed.
+last reboot
+
+# See last login time of each user.
+lastlog
+```
+
+In `rsyslog.conf`, the first part of an instruction consists of a selector and an action.
+The selector - e.g. `kern.*` or `kern.warn` - consists of two parts:
+
+```
+# First Part's Possible Values
+auth
+kern
+mail
+cron
+daemon
+news (logs onnetwork news subsystem)
+lpr (logs on printing)
+user (logs on user programs)
+local{0..7} (logs reserved for local use)
+
+# Second part's Possible Values
+# The logging system will log priorities that are greater or equal.
+debug
+info
+notice
+warn
+err
+crit
+alert
+emerg
+```
+
 <br>
