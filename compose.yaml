@@ -88,8 +88,9 @@ services:
       # Source:
       #   https://eff-certbot.readthedocs.io/en/stable/using.html#where-certs
       - letsencrypt-lockfiles:/var/lib/letsencrypt
-    command:
+    entrypoint:
       - nginx
+    command:
       - -g
       - daemon off;
 
