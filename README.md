@@ -429,7 +429,7 @@ lastlog
 
 ### `rsyslog.conf` basics
 
-https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/s1-basic_configuration_of_rsyslog#s2-Filters 
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-logfiles-locating
 
 https://www.rsyslog.com/doc/configuration/properties.html
 
@@ -510,6 +510,19 @@ The last filtering method is expression-based filtering.
 "With expression-based filters, you can nest the conditions by using a script enclosed in curly braces...
 The script allows you to use facility/priority-based filters inside the expression.
 On the other hand, property-based filters are not recommended here.
+
+In addition, we can use templates as such:
+
+```
+template(name=”exampleTemplate” type=”list”) {
+  constant(value=”/var/log/example/”)
+  property(name=”programname” lowercase="on")
+  property(name="hostname" uppercase="on")
+  constant(value”.log”)
+}
+
+*.* ?authTemplate
+```
 
 <br>
 
