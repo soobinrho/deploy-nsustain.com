@@ -488,7 +488,7 @@ Another way of filtering is property-based filtering.
 
 `:PROPERTY, [!]COMPARE_OPERATION, "STRING"`. Example: `:msg, contains, "hello world"`, `:msg, !regex, "fetal .* error"`
 
-```bash
+```
 # Properties
 syslogseverity-text
 syslogfacility-text
@@ -518,7 +518,7 @@ The last filtering method is expression-based filtering.
 The script allows you to use facility/priority-based filters inside the expression.
 On the other hand, property-based filters are not recommended here.
 
-In addition, we can use templates as such:
+We can use templates as such:
 
 ```
 template(name=”exampleTemplate” type=”list”) {
@@ -530,6 +530,33 @@ template(name=”exampleTemplate” type=”list”) {
 
 *.* ?authTemplate
 ```
+
+We can use rulesets as such:
+
+```
+ruleset(name="remote_nsustain") {
+  auth.* action(type="omfile" file="/var/log/nsustain/%programname%.log")
+}
+
+ruleset(name="remote_test") {
+  cron.* action(type="omfile" file="/var/log/remote_test/cron.log")
+}
+
+input(type="imtcp" port="514" ruleset="remote_nsustain");
+input(type="imtcp" port="6514" ruleset="remote_test");
+```
+
+I prefer using a ruleset for remote logs over using if statements.
+All rules are evaulated for all logs received until the end of all rules defined or until the log is discarded with `stop`, but using a ruleset allows you to "enhance the performance of rsyslog by defining a distinct set of actions bound to a specific input.
+In other words, filter conditions that will be inevitably evaluated as false for certain types of messages can be skipped."
+
+<br>
+
+### `logrotate`
+
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s2-log_rotation
+
+`/etc/logrotate.conf` applies to all log files, and if you create a config for a specific log file such as `/etc/logrotate.d/example`, you can override it.
 
 <br>
 
