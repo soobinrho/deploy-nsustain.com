@@ -1,0 +1,2 @@
+cd /home/soobinrho/deploy-nsustain.com
+docker compose exec nginx certbot certonly --standalone -d nsustain.com -d *.nsustain.com --text --agree-tos --email soobinrho@nsustain.com --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http

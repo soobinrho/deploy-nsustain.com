@@ -293,6 +293,18 @@ cd deploy-nsustain.com
 docker compose build
 docker compose up -d
 
+# Set up a cron job for certbot renewal.
+# This cron job is set to run every day. The `certbot` is smart enough
+# to only renew the certificate when it is about to expire.
+# Source:
+#   https://stackoverflow.com/a/66638930
+cp ./certbot_letsencrypt_daily_runner.sh.example ./certbot_letsencrypt_daily_runner.sh
+
+# Change `nsustain.com`, `nsustain.com`, and `soobinrho@gmail.com`
+# to your values. The second domain is requesting for a wildcard cert.
+vim ./certbot_letsencrypt_daily_runner.sh
+sudo ln -s certbot_letsencrypt_daily_runner.sh /etc/cron.daily/certbot_letsencrypt_daily_runner.sh
+
 # ---------------------------------------------------------------------
 # 7. Useful workflows.
 # ---------------------------------------------------------------------

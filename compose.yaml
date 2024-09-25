@@ -20,7 +20,7 @@ services:
     pull_policy: never
     build:
       context: ./nsustain.com/src/docker
-      dockerfile: flarum.Dockerfile
+      dockerfile: Dockerfile.flarum
     depends_on:
       - mariadb
       - nginx
@@ -63,10 +63,13 @@ services:
       - 3000  # used by Node (pnpm)
 
   nginx:
-    image: nginx:latest
+    image: nsustain/nginx:latest
     container_name: nginx
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     restart: unless-stopped
-    pull_policy: always
+    pull_policy: never
     ports:
       - 80:80
       - 443:443
