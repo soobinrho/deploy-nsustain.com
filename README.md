@@ -442,14 +442,20 @@ local{0..7} (logs reserved for local use)
 7. debug
 ```
 
+In `rsyslog.conf`, the first part of an instruction consists of a selector and an action -- e.g. `kern.*` or `kern.warn`.
+
 The logging system will log priorities that are equal or higher priority.
 For example, `kern.crit` will log `crit`, `alert`, and `emerg`.
 We can also use an `*` to define all facilities or all priorities, and use `!` to denote not.
 For example, `cron.!alert,!crit,!err,!warn,!notice,!info,!debug` is effectively the same as `cron.emerg`.
 
+<br>
 
-In `rsyslog.conf`, the first part of an instruction consists of a selector and an action.
-The selector - e.g. `kern.*` or `kern.warn` - consists of two parts:
+- What is `/dev/log'? https://askubuntu.com/a/1510580
+
+"systemd centralizes all log streams in the Journal daemon.
+Messages coming in via /dev/log, via the native protocol, via STDOUT/STDERR of all services and via the kernel are received in the journal daemon.
+The journal daemon then stores them to disk or in RAM (depending on the configuration of the Storage= option in journald.conf), and optionally forwards them to the console, the kernel log buffer, or to a classic BSD syslog daemon."
 
 
 <br>
