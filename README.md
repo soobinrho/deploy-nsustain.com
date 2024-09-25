@@ -120,14 +120,23 @@ sudo vim /etc/rsyslog.conf
 ```
 # ---------------------------------------------------------------------
 # Configure rsyslog to listen and receive remote logs.
+# Source:
+#   https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-configuring_rsyslog_on_a_logging_server
 # ---------------------------------------------------------------------
+template(name=”template_remote_auth” type=”list”) {
+  constant(value="/var/log/remote/%HOSTNAME%/auth_%PROGRAMNAME:::secpath-replace%.log”)
+}
+
+template(name=”template_remote” type=”list”) {
+  constant(value="/var/log/remote/%HOSTNAME%/%PROGRAMNAME:::secpath-replace%.log”)
+}
+
 module(load="imtcp")
-input(type="imtcp" port="514")
-
-$template FILENAME,"/var/log/%hostname%/%$YEAR%%$MONTH%%$DAY%_%PROGRAMNAME%.log"
-*.* ?FILENAME
-
-if ($msg contains " nsustain ") then { Action (type="omfile" File="/var/log/nsustain/%$YEAR%%$MONTH%$DAY%_noName.log") stop }
+ruleset(name="ruleset_remote"){
+  authpriv.*  action(type="omfile" DynaFile="template_remote_autb")
+  *.info;mail.none;authpriv.none;cron.none action(type="omfile" DynaFile="template_remote")
+}
+input(type="imtcp" port="514" ruleset="ruleset_remote")
 ```
 ```bash
 # Configure logrotate so that logs don't take too much space.
