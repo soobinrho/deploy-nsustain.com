@@ -23,7 +23,6 @@ services:
       dockerfile: Dockerfile.flarum
     depends_on:
       - mariadb
-      - nginx
     expose:
       - 9000  # used by PHP-FPM
     networks:
@@ -41,8 +40,6 @@ services:
     build:
       context: ./BeeMovr
       dockerfile: Dockerfile.beemovr
-    depends_on:
-      - nginx
     restart: unless-stopped
     networks:
       - back-end
@@ -54,8 +51,6 @@ services:
     build:
       context: ./GoodLifeFarms
       dockerfile: Dockerfile.goodlifefarms
-    depends_on:
-      - nginx
     restart: unless-stopped
     networks:
       - back-end
@@ -68,6 +63,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx
+    depends_on:
+      - flarum
+      - beemovr
+      - goodlifefarms
     restart: unless-stopped
     pull_policy: never
     ports:
