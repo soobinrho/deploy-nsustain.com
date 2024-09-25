@@ -417,7 +417,7 @@ lastlog
 
 - `rsyslog.conf` basics https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/s1-basic_configuration_of_rsyslog#s2-Filters https://www.rsyslog.com/doc/configuration/properties.html
 
-`FACILITY.PRIORITY`. Example: `auth.*`
+`FACILITY.PRIORITY`. Example: `auth.* /var/log/auth.log`
 
 ```
 # Facilities
@@ -446,6 +446,17 @@ In `rsyslog.conf`, the first part of an instruction consists of a selector and a
 
 The logging system will log priorities that are equal or higher priority.
 For example, `kern.crit` will log `crit`, `alert`, and `emerg`.
+The output path can be directed to the standard output on the console (`dev/console`).
+The output can also be directed to a remote host (`@HOST:PORT` for UDP and `@@HOST:PORT` for TCP).
+Use `stop` to discard logs (`local5.* stop`).
+For multiple actions, use a newline amd `&`.
+
+```
+# Example
+auth.* @@123.123.123.123:514
+& /var/log/auth.log
+```
+
 We can also use an `*` to define all facilities or all priorities, and use `!` to denote not.
 For example, `cron.!alert,!crit,!err,!warn,!notice,!info,!debug` is effectively the same as `cron.emerg`.
 We call this facility/priority-based filtering.
@@ -478,7 +489,7 @@ ereregex (Extended Regular Expression)
 
 The last filtering method is expression-based filtering.
 
-`if EXPRESSION then ACTION else ACTION`. Example: `if $msg contains_i "nsustain docker" and $inputname == "imtcp then action(type="omfile" file="/var/log/nsustain/docker.log")
+`if EXPRESSION then ACTION else ACTION`. Example: `if $msg contains_i "nsustain docker" and $inputname == "imtcp then action(type="omfile" file="/var/log/nsustain/docker.log")`
 
 "With expression-based filters, you can nest the conditions by using a script enclosed in curly braces...
 The script allows you to use facility/priority-based filters inside the expression.
