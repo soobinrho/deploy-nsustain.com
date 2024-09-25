@@ -300,6 +300,14 @@ sudo systemctl restart rsyslog
 # ---------------------------------------------------------------------
 git clone https://github.com/soobinrho/deploy-nsustain.com.git
 cd deploy-nsustain.com
+
+# Get Cloudflare Tunnel token by following instructions at:
+#   https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/create-remote-tunnel/
+cp .env_cloudflared.example .env_cloudflared
+
+# Enter the token from the previous step into `.env_cloudflared`
+vim .env_cloudflared
+
 docker compose build
 docker compose up -d
 
