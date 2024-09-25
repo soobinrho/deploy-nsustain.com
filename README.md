@@ -7,6 +7,16 @@
 
 <br>
 
+## Applications
+
+| ***Web App Deployed*** |
+| ---------- |
+| https://nsustain.com |
+| https://BeeMovr.nsustain.com |
+| https://GoodLifeFarms.nsustain.com |
+
+<br>
+
 ## Infrastructure
 
 | ***Program*** | ***Purpose*** |
