@@ -324,9 +324,11 @@ sudo lnav
 
 <br>
 
-#### Extra Readings
+## Extra Readings
 
-- What are network protocols? https://www.cloudflare.com/learning/network-layer/what-is-a-protocol/
+### What are network protocols?
+
+https://www.cloudflare.com/learning/network-layer/what-is-a-protocol/
 
 "The Internet Protocol (IP) is responsible for routing data by indicating where data packets come from and what their destination is.
 IP makes network-to-network communications possible.
@@ -341,7 +343,9 @@ TCP is meant to be used with IP, and the two protocols are often referenced toge
 
 <br>
 
-- What is Transport Layer Security (TLS)? https://www.cloudflare.com/learning/ssl/transport-layer-security-tls/
+### What is Transport Layer Security (TLS)?
+
+https://www.cloudflare.com/learning/ssl/transport-layer-security-tls/
 
 Secure Sockets Layer (SSL) was invented in 1995 by Netscape, and was suceeded by TLS in 1999 by the Internet Engineering Task Force (IETF).
 Websites that use the Hypertext transfer protocol secure (HTTPS) protocol are using TLS/SSL under the hood.
@@ -361,14 +365,18 @@ The server would be able to decrypt the random encrypted string only if the serv
 
 <br>
 
-- What is Cloudflare Tunnel? https://www.cloudflare.com/products/tunnel/
+### What is Cloudflare Tunnel?
+
+https://www.cloudflare.com/products/tunnel/
 
 "The Tunnel daemon [cloudflared] creates an encrypted tunnel between your origin web server and Cloudflare’s nearest data center, all without opening any public inbound ports."
 Then, all requests to the origin web server is handled through the Cloudflare data center, which means the identity of the origin web server or even its IP address is hidden and therefore shielded from DDoS attacks, brute force login attacks, and so on.
 
 <br>
 
-- What is network tunneling? https://www.cloudflare.com/learning/network-layer/what-is-tunneling/
+### What is network tunneling?
+
+https://www.cloudflare.com/learning/network-layer/what-is-tunneling/
 
 "Tunneling works by encapsulating packets: wrapping packets inside of other packets.
 (Packets are small pieces of data that can be re-assembled at their destination into a larger file.)
@@ -381,7 +389,9 @@ Another protocol in common use for VPNs is Transport Layer Security (TLS)."
 
 <br>
 
-- How does logging work in Linux? https://www.loggly.com/ultimate-guide/linux-logging-basics/
+### How does logging work in Linux?
+
+https://www.loggly.com/ultimate-guide/linux-logging-basics/
 
 "The syslog service receives and processes syslog messages and listens for events by creating a socket located at /dev/log, which applications can write to.
 It can write messages to a local file or forward messages to a remote server.
@@ -397,7 +407,9 @@ Good indicators of an RFC 3164 syslog message are the absence of structured data
 
 <br>
 
-- How to view Linux logs https://www.digitalocean.com/community/tutorials/how-to-view-and-configure-linux-logs-on-ubuntu-debian-and-centos
+### How to view Linux logs
+
+https://www.digitalocean.com/community/tutorials/how-to-view-and-configure-linux-logs-on-ubuntu-debian-and-centos
 
 ```bash
 # See who is logged in.
@@ -415,7 +427,11 @@ lastlog
 
 <br>
 
-- `rsyslog.conf` basics https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/s1-basic_configuration_of_rsyslog#s2-Filters https://www.rsyslog.com/doc/configuration/properties.html
+### `rsyslog.conf` basics
+
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/s1-basic_configuration_of_rsyslog#s2-Filters 
+
+https://www.rsyslog.com/doc/configuration/properties.html
 
 `FACILITY.PRIORITY`. Example: `auth.* /var/log/auth.log`
 
@@ -494,11 +510,12 @@ The last filtering method is expression-based filtering.
 "With expression-based filters, you can nest the conditions by using a script enclosed in curly braces...
 The script allows you to use facility/priority-based filters inside the expression.
 On the other hand, property-based filters are not recommended here.
-RainerScript [the scripting language of `rsyslog.conf` supports regular expressions with specialized functions re_match() and re_extract().
 
 <br>
 
-- What is `/dev/log`? https://askubuntu.com/a/1510580
+### What is `/dev/log`?
+
+https://askubuntu.com/a/1510580
 
 "`systemd` centralizes all log streams in the Journal daemon.
 Messages coming in via `/dev/log`, via the native protocol, via STDOUT/STDERR of all services and via the kernel are received in the journal daemon.
@@ -506,7 +523,9 @@ The journal daemon then stores them to disk or in RAM (depending on the configur
 
 <br>
 
-- Why `journalctl`? https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-basic_configuration_of_rsyslog
+### Why `journalctl`?
+
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-basic_configuration_of_rsyslog
 
 While I use `rsyslog` for storing and relaying logs to my centralized logging server, "the `journald` daemon is the primary tool for troubleshooting," and "the native journal file format, which is a structured and indexed binary file, improves searching and provides faster operation."
 
