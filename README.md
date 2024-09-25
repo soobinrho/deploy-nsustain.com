@@ -433,29 +433,36 @@ https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_
 
 https://www.rsyslog.com/doc/configuration/properties.html
 
+`syslog` requires all processes submitting logs to "provide two pieces of classification information with it."
+
 `FACILITY.PRIORITY`. Example: `auth.* /var/log/auth.log`
 
 ```
 # Facilities
-auth
-kern
+# Source:
+#   https://www.gnu.org/software/libc/manual/html_node/syslog_003b-vsyslog.html
+user (user programs)
 mail
-cron
 daemon
-news (logs onnetwork news subsystem)
-lpr (logs on printing)
-user (logs on user programs)
+auth (security authorizations)
+syslog
+lpr (printer)
+news (network news)
+uucp (Unix-to-Unix Copy)
+cron
+authpriv (private security authorization)
+ftp
 local{0..7} (logs reserved for local use)
 
 # Priorities
-0. emerg
-1. alert
-2. crit
-3. err
-4. warn
-5. notice
-6. info
-7. debug
+0. emerg (System is unusable)
+1. alert (Action must be taken immediately)
+2. crit (Critical condition)
+3. err (Error)
+4. warn (Warning)
+5. notice (Normal but important event)
+6. info (Purely informational)
+7. debug (Only for debugging purposes)
 ```
 
 In `rsyslog.conf`, the first part of an instruction consists of a selector and an action -- e.g. `kern.*` or `kern.warn`.
