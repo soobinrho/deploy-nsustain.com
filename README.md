@@ -134,7 +134,7 @@ template(name=”template_remote” type=”list”) {
 module(load="imtcp")
 ruleset(name="ruleset_remote"){
   authpriv.*  action(type="omfile" DynaFile="template_remote_autb")
-  *.info;mail.none;authpriv.none;cron.none action(type="omfile" DynaFile="template_remote")
+  *.info;authpriv.none action(type="omfile" DynaFile="template_remote")
 }
 input(type="imtcp" port="514" ruleset="ruleset_remote")
 ```
