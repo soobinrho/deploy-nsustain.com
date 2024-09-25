@@ -65,8 +65,6 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    depends_on:
-      - cloudflared
     restart: unless-stopped
     pull_policy: always
     ports:
