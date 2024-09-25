@@ -12,7 +12,6 @@
 | ***Program*** | ***Purpose*** |
 | ---- | ---- |
 | ***Hetzner*** | One of the best VPS service providers in the world; it's affordable and pleasant to use. Both my application server and logging server are hosted here. |
-| ***Cloudflare Tunnel*** | A reverse proxy first between my server and Cloudflare's nearest data center and thereafter from any user that wants to connect to my server to the Cloudflare data center. |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." I use `rsyslog` for aggregating all log entries (system logs, Docker container logs, etc) in my application server and relaying them to my logging and monitoring server. |
 | ***Stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." Although `rsyslog` supports SSL/TLS, it's only single-threaded.<sup>[1]</sup> Using `Stunnel`, all my `rsyslog` transmissions are encrypted and multi-threaded. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup service. I use `Tarsnap` for regular backups of my servers. |
@@ -20,15 +19,6 @@
 <sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
 
 <br>
-
-> [!NOTE]  
-> To encrypt the network traffic with https, one commonly-used way is to obtain an SSL/TLS certificate from certificate authorities such as Let's Encrypt.
-> Here, however, I opted to use Cloudflare Tunnel.
-> It has two advantages:
-> (a) Ease of use.
-> To implement it, I just need to add it to my Docker Compose `compose.yaml`, and configure the rest from the Cloudflare Tunnel dashboard.
-> (b) Automatic encryption of all traffic.
-> Setting up a Cloudflare Tunnel provides automatic encryption of all web traffic, which to me is a little bit simpler than setting up a SSL/TLS certificate myself and having to configure a new `nginx.conf` for that use case.
 
 > [!NOTE]  
 > `syslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary
@@ -81,14 +71,14 @@ sudo service ssh restart
 # -------------------------------------------------------------------
 # 2. [Application Server] Configure firewall.
 # -------------------------------------------------------------------
-# Allow inbound traffic with port 7844 TCP/UDP (Cloudflare Tunnel)
-# Allow inbound traffic with port 443  TCP/UDP (Cloudflare Tunnel)
-# Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
+# Allow inbound traffic with port 443 TCP/UDP (Cloudflare Tunnel)
+# Allow inbound traffic with port 80  TCP/UDP (Cloudflare Tunnel)
+# Allow inbound traffic with port 22  TCP/UDP from your IP address (ssh)
 sudo ufw reset
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 7844,443/tcp
-sudo ufw allow 7844,443/udp
+sudo ufw allow 443
+sudo ufw allow 80
 sudo ufw allow from <home ip address> to any port 22
 sudo ufw enable
 
@@ -300,14 +290,6 @@ sudo systemctl restart rsyslog
 # ---------------------------------------------------------------------
 git clone https://github.com/soobinrho/deploy-nsustain.com.git
 cd deploy-nsustain.com
-
-# Get Cloudflare Tunnel token by following instructions at:
-#   https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/create-remote-tunnel/
-cp .env_cloudflared.example .env_cloudflared
-
-# Enter the token from the previous step into `.env_cloudflared`
-vim .env_cloudflared
-
 docker compose build
 docker compose up -d
 
@@ -421,12 +403,15 @@ last reboot
 lastlog
 ```
 
-In `rsyslog.conf`, the first part of an instruction consists of a selector and an action.
-The selector - e.g. `kern.*` or `kern.warn` - consists of two parts:
+<br>
+
+- `rsyslog.conf` basics https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/s1-basic_configuration_of_rsyslog#s2-Filters
+
+`FACILITY.PRIORITY`
 
 ```
-# First Part's Possible Values
-auth
+# Facilities
+jauth
 kern
 mail
 cron
@@ -436,16 +421,25 @@ lpr (logs on printing)
 user (logs on user programs)
 local{0..7} (logs reserved for local use)
 
-# Second part's Possible Values
-# The logging system will log priorities that are greater or equal.
-debug
-info
-notice
-warn
-err
-crit
-alert
-emerg
+# Priorities
+0. emerg
+1. alert
+2. crit
+3. err
+4. warn
+5. notice
+6. info
+7. debug
 ```
+
+The logging system will log priorities that are equal or higher priority.
+For example, `kern.crit` will log `crit`, `alert`, and `emerg`.
+We can also use an `*` to define all facilities or all priorities, and use `!` to denote not.
+For example, `cron.!alert,!crit,!err,!warn,!notice,!info,!debug` is effectively the same as `cron.emerg`.
+
+
+In `rsyslog.conf`, the first part of an instruction consists of a selector and an action.
+The selector - e.g. `kern.*` or `kern.warn` - consists of two parts:
+
 
 <br>

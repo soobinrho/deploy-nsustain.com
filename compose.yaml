@@ -12,14 +12,6 @@
 #   https://kompose.io/conversion/#version-table
 version: "3.3"
 services:
-  cloudflared:
-    image: cloudflare/cloudflared
-    container_name: cloudflared
-    restart: unless-stopped
-    command: tunnel run
-    env_file:
-      - ./.env_cloudflared
-
   flarum:
     image: nsustain/flarum:latest
     container_name: flarum
