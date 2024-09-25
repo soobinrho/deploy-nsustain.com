@@ -83,13 +83,13 @@ sudo service ssh restart
 # -------------------------------------------------------------------
 # Allow inbound traffic with port 7844 TCP/UDP (Cloudflare Tunnel)
 # Allow inbound traffic with port 443  TCP/UDP (Cloudflare Tunnel)
-# Allow inbound traffic with port 80   TCP/UDP (HTTP)
 # Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
 sudo ufw reset
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 7844,443,80,22/tcp
-sudo ufw allow 7844,443,80,22/udp
+sudo ufw allow 7844,443/tcp
+sudo ufw allow 7844,443/udp
+sudo ufw allow from <home ip address> to any port 22
 sudo ufw enable
 
 # Confirm current firewall rules.
@@ -107,8 +107,8 @@ sudo ufw status
 sudo ufw reset
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 6514,22/tcp
-sudo ufw allow 6514,22/udp
+sudo ufw allow 6514
+sudo ufw allow from <home ip address> to any port 22
 sudo ufw enable
 
 # Confirm current firewall rules.
