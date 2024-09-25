@@ -9,7 +9,7 @@
 
 ## Applications
 
-| ***Web App Deployed*** |
+| ***Web Apps Deployed*** |
 | ---------- |
 | https://nsustain.com |
 | https://BeeMovr.nsustain.com |
