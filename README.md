@@ -242,9 +242,16 @@ echo "This is a test log message." | nc <server_ip> <port>
 sudo vim /etc/rsyslog.conf
 ```
 ```
+# "rsyslog keeps messages in memory if the remote server is not reachable.
+# A file on disk is created only if rsyslog runs out of the configured memory queue space or needs to shut down."
+# Source:
+#   https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s2-defining_queues
 *.*  action(type="omfwd" target="127.0.0.1" port="514" protocol="tcp"
-            action.resumeRetryCount="100"
-            queue.type="linkedList" queue.size="10000")
+  queue.type="linkedList"
+  queue.filename=”queue_disk_backup”
+  queue.saveonshutdown="on"
+  action.resumeRetryCount="-1"
+  queue.size="10000")
 ```
 ```bash
 
@@ -534,8 +541,9 @@ template(name=”exampleTemplate” type=”list”) {
 We can use rulesets as such:
 
 ```
+# `secpath-replace' is secure path generation replacing `/` with `_`.
 ruleset(name="remote_nsustain") {
-  auth.* action(type="omfile" file="/var/log/nsustain/%programname%.log")
+  auth.* action(type="omfile" file="/var/log/nsustain/%programname:::secpath-replace%.log")
 }
 
 ruleset(name="remote_test") {
