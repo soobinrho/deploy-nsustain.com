@@ -1,3 +1,2 @@
 .*env*
 !*.example
-certbot_letsencrypt_daily_runner.sh

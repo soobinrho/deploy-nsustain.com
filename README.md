@@ -294,16 +294,14 @@ docker compose build
 docker compose up -d
 
 # Issue a SSL/TLS certificate using Letsencrypt.
-cp ./certbot_letsencrypt_daily_runner.sh.example ./certbot_letsencrypt_daily_runner.sh
-./certbot_letsencrypt_daily_runner.sh
+./certbot_runner.sh
 
 # Set up a cron job for certbot renewal.
 # This cron job is set to run every day. The `certbot` is smart enough
 # to only renew the certificate when it is about to expire.
 # Source:
 #   https://stackoverflow.com/a/66638930
-vim ./certbot_letsencrypt_daily_runner.sh
-sudo ln -s certbot_letsencrypt_daily_runner.sh /etc/cron.daily/certbot_letsencrypt_daily_runner.sh
+sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner.sh /etc/cron.daily/certbot_runner.sh
 
 # ---------------------------------------------------------------------
 # 7. Useful workflows.
