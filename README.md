@@ -602,8 +602,9 @@ While I use `rsyslog` for storing and relaying logs to my centralized logging se
 > [!warning]
 > I use `journald` strictly when I'm SSH'ing to my application server because `journald` data is not persistent.
 > `rsyslog` is in charge of storing all logs in files, while "the journal data is stored in memory and lost between reboots."
+> 
 > Since the logging server is receiving the logs remotely from the application server, the logging server's `journald` won't show you the logs.
-> Instead, use `vim` to see the `rsyslog` log files directly at `/var/log/remote`.
+> Instead, if I'm SSH'ing to the logging server, I would use `vim` to see the `rsyslog` log files directly at `/var/log/remote`.
 >
 > Source:
 >   https://gist.github.com/JPvRiel/b7c185833da32631fa6ce65b40836887
