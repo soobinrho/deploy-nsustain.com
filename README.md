@@ -457,5 +457,18 @@ For example, `cron.!alert,!crit,!err,!warn,!notice,!info,!debug` is effectively 
 Messages coming in via /dev/log, via the native protocol, via STDOUT/STDERR of all services and via the kernel are received in the journal daemon.
 The journal daemon then stores them to disk or in RAM (depending on the configuration of the Storage= option in journald.conf), and optionally forwards them to the console, the kernel log buffer, or to a classic BSD syslog daemon."
 
+<br>
+
+- Why `journalctl`? https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-basic_configuration_of_rsyslog
+
+While I use `rsyslog` for storing and relaying logs to my centralized logging server, "the journald daemon is the primary tool for troubleshooting," and "the native journal file format, which is a structured and indexed binary file, improves searching and provides faster operation."
+
+```bash
+# How to see all logs.
+journalctl
+
+# How to view logs real time.
+journalctl -f
+```
 
 <br>
