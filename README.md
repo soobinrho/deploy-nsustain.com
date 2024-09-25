@@ -415,13 +415,13 @@ lastlog
 
 <br>
 
-- `rsyslog.conf` basics https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/s1-basic_configuration_of_rsyslog#s2-Filters
+- `rsyslog.conf` basics https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/deployment_guide/s1-basic_configuration_of_rsyslog#s2-Filters https://www.rsyslog.com/doc/configuration/properties.html
 
-`FACILITY.PRIORITY`
+`FACILITY.PRIORITY`. Example: `auth.*`
 
 ```
 # Facilities
-jauth
+auth
 kern
 mail
 cron
@@ -448,20 +448,56 @@ The logging system will log priorities that are equal or higher priority.
 For example, `kern.crit` will log `crit`, `alert`, and `emerg`.
 We can also use an `*` to define all facilities or all priorities, and use `!` to denote not.
 For example, `cron.!alert,!crit,!err,!warn,!notice,!info,!debug` is effectively the same as `cron.emerg`.
+We call this facility/priority-based filtering.
+
+Another way of filtering is property-based filtering.
+
+`:PROPERTY, [!]COMPARE_OPERATION, "STRING"`. Example: `:msg, contains, "hello world"`, `:msg, !regex, "fetal .* error"`
+
+```bash
+# Properties
+syslogseverity-text
+syslogfacility-text
+timegenerated
+hostname
+syslogtag
+msg
+programname (parsed by the syslog syntax)
+inputname (The module that produced the log; for example, `imtcp` for remote logs and `rsyslogd` for internally-produced logs)
+
+# Compare Operations
+startswith
+startswith_i (case insensitive)
+contains
+contains_i (case insensitive)
+isequal
+isempty
+regex
+ereregex (Extended Regular Expression)
+```
+
+The last filtering method is expression-based filtering.
+
+`if EXPRESSION then ACTION else ACTION`. Example: `if $msg contains_i "nsustain docker" and $inputname == "imtcp then action(type="omfile" file="/var/log/nsustain/docker.log")
+
+"With expression-based filters, you can nest the conditions by using a script enclosed in curly braces...
+The script allows you to use facility/priority-based filters inside the expression.
+On the other hand, property-based filters are not recommended here.
+RainerScript [the scripting language of `rsyslog.conf` supports regular expressions with specialized functions re_match() and re_extract().
 
 <br>
 
-- What is `/dev/log'? https://askubuntu.com/a/1510580
+- What is `/dev/log`? https://askubuntu.com/a/1510580
 
-"systemd centralizes all log streams in the Journal daemon.
-Messages coming in via /dev/log, via the native protocol, via STDOUT/STDERR of all services and via the kernel are received in the journal daemon.
+"`systemd` centralizes all log streams in the Journal daemon.
+Messages coming in via `/dev/log`, via the native protocol, via STDOUT/STDERR of all services and via the kernel are received in the journal daemon.
 The journal daemon then stores them to disk or in RAM (depending on the configuration of the Storage= option in journald.conf), and optionally forwards them to the console, the kernel log buffer, or to a classic BSD syslog daemon."
 
 <br>
 
 - Why `journalctl`? https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-basic_configuration_of_rsyslog
 
-While I use `rsyslog` for storing and relaying logs to my centralized logging server, "the journald daemon is the primary tool for troubleshooting," and "the native journal file format, which is a structured and indexed binary file, improves searching and provides faster operation."
+While I use `rsyslog` for storing and relaying logs to my centralized logging server, "the `journald` daemon is the primary tool for troubleshooting," and "the native journal file format, which is a structured and indexed binary file, improves searching and provides faster operation."
 
 ```bash
 # How to see all logs.
