@@ -44,7 +44,11 @@ Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS
 # [Both] here means run the following commands in both the application
 # server and the monitoring server.
 adduser soobinrho
-adduser soobinrho sudo
+usermod -a -G sudo soobinrho
+
+# By default on `journalctl`, users can only see logs limited to their own programs.
+# Adding to the administrators group `adm` allows you to see all logs.
+usermod -a -G adm soobinrho
 
 # Change the hostname if desired.
 hostnamectl set-hostname newHostName
@@ -555,10 +559,12 @@ ruleset(name="remote_nsustain") {
   auth.* action(type="omfile" file="/var/log/nsustain/%programname:::secpath-replace%.log")
 }
 
+# omfile here means output module (file).
 ruleset(name="remote_test") {
   cron.* action(type="omfile" file="/var/log/remote_test/cron.log")
 }
 
+# imtcp here means input module (tcp).
 input(type="imtcp" port="514" ruleset="remote_nsustain");
 input(type="imtcp" port="6514" ruleset="remote_test");
 ```
@@ -593,12 +599,48 @@ https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_
 
 While I use `rsyslog` for storing and relaying logs to my centralized logging server, "the `journald` daemon is the primary tool for troubleshooting," and "the native journal file format, which is a structured and indexed binary file, improves searching and provides faster operation."
 
+> [!warning]
+> I use `journald` strictly when I'm SSH'ing to my application server because `journald` data is not persistent.
+> `rsyslog` is in charge of storing all logs in files, while "the journal data is stored in memory and lost between reboots."
+> Source:
+>   https://gist.github.com/JPvRiel/b7c185833da32631fa6ce65b40836887
+
+"Logging data is collected, stored, and processed by the Journal’s journald service.
+It creates and maintains binary files called journals based on logging information that is received from the kernel, from user processes, from standard output, and standard error output of system services or via its native API...
+The actual journal files are secured, and therefore cannot be manually edited."
+
 ```bash
 # How to see all logs.
 journalctl
 
 # How to view logs real time.
+# You can use -f with other filters as well (listed below).
 journalctl -f
+
+# How to view logs from the current boot.
+journalctl -b
+
+# How to filter by priority (equal or greater).
+journalctl -p err
+
+# How to filter by time.
+journalctl --since="2024-9-16 23:59:59"
+
+# How to filter by a specific field.
+journalctl <field name>=<field value>
+
+# Same as above but logical AND.
+journalctl <...>=<...> <...>=<...>
+
+# Same as above but logical OR.
+journalctl <...>=<...> + <...>=<...>
+
+# How to see all possible options of a field, press <tab> twice or enter this.
+journalctl -F <field name>
 ```
+
+"Lines of error priority and higher are highlighted with red color and a bold font is used for lines with notice and warning priority...
+The time stamps are converted for the local time zone of your system...
+All logged data is shown, including rotated logs."
 
 <br>
