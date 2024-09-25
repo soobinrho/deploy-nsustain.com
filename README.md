@@ -79,7 +79,7 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow 443
 sudo ufw allow 80
-sudo ufw allow from <home ip address> to any port 22
+sudo ufw allow from <home IP> to any port 22
 sudo ufw enable
 
 # Confirm current firewall rules.
@@ -97,8 +97,8 @@ sudo ufw status
 sudo ufw reset
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 6514
-sudo ufw allow from <home ip address> to any port 22
+sudo ufw allow from <application server IP> to any port 6514
+sudo ufw allow from <home IP> to any port 22
 sudo ufw enable
 
 # Confirm current firewall rules.
@@ -546,9 +546,9 @@ input(type="imtcp" port="514" ruleset="remote_nsustain");
 input(type="imtcp" port="6514" ruleset="remote_test");
 ```
 
-I prefer using a ruleset for remote logs over using if statements.
 All rules are evaulated for all logs received until the end of all rules defined or until the log is discarded with `stop`, but using a ruleset allows you to "enhance the performance of rsyslog by defining a distinct set of actions bound to a specific input.
 In other words, filter conditions that will be inevitably evaluated as false for certain types of messages can be skipped."
+I prefer using a ruleset over using if statements for remote logs because its syntax is more pleasing to my eyes.
 
 <br>
 
