@@ -31,7 +31,7 @@
 <br>
 
 > [!NOTE]  
-> `syslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary logging system.
+> `rsyslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary logging system.
 > `journald` and `rsyslog` complement each other.
 > While `rsyslog` is especially good at storing and relaying logs to a centralized logging server,
 > `journald` is great at viewing and filtering logs for analysis.
