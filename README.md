@@ -497,8 +497,11 @@ sudo netstat -pna | grep 80
 # Install lnav: the logfile navigator.
 sudo snap install lnav
 
-# How to view /etc/var/syslog in pretty format.
-sudo lnav
+# How to read logs. Automatically follows all the log files in
+# the selected directory in real time, and it does so with color coding
+# and vim key bindings for navigation (hjkl, gg, GG, / for search, etc).
+cd /var/log
+sudo lnav .
 ```
 
 <br>
