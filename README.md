@@ -764,7 +764,7 @@ While I use `rsyslog` for storing and relaying logs to my centralized logging se
 > 
 > Since the logging server is receiving the logs remotely from the application server, the logging server's `journald` won't show you the logs.
 > Instead, if I'm SSH'ing to the logging server, I would use `lnav` to see the `rsyslog` log files directly at `/var/log/remote`.
-> For example, `sudo lnav /var/log/remote/nsustain/docker.log` shows all logs from my web apps.
+> For example, `sudo lnav /var/log/remote/nsustain` shows all logs from my application server.
 >
 > Source:
 >   https://gist.github.com/JPvRiel/b7c185833da32631fa6ce65b40836887
