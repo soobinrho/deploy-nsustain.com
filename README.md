@@ -31,10 +31,10 @@
 <br>
 
 > [!NOTE]  
-> `rsyslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary logging system.
+> `rsyslog` is a plaintext logging system,<sup>[2]</sup> while`journald` is a binary logging system.
 > `journald` and `rsyslog` complement each other.
-> While `rsyslog` is especially good at storing and relaying logs to a centralized logging server,
-> `journald` is great at viewing and filtering logs for analysis.
+> While `rsyslog` is especially good at storing and relaying logs to a centralized logging server, `journald` is great at viewing and filtering logs for analysis.
+> I normally use `sudo lnav /var/log` to view logs from `rsyslog` for almost all tasks related to logs, but use `sudo journalctl -f <field name>=<field value>` for when I need to use filters.
 
 <sub>[2] https://datatracker.ietf.org/doc/html/rfc5424</sub>
 
