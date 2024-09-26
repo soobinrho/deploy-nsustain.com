@@ -252,8 +252,8 @@ Copy and paste to `/etc/stunnel/stunnel.conf`.
 
 ```
 ; It is recommended to drop root privileges if stunnel is started by root
-;setuid=stunnel4
-;setgid=stunnel4
+setuid=stunnel4
+setgid=stunnel4
 
 ; Debugging stuff (may be useful for troubleshooting)
 ;foreground=yes
