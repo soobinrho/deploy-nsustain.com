@@ -21,9 +21,9 @@
 
 | ***Program*** | ***Purpose*** |
 | ---- | ---- |
-| ***Hetzner*** | One of the best VPS service providers in the world; it's affordable and pleasant to use. Both my application server and logging server are hosted here. |
-| ***rsyslog*** | "Rocket-fast System for Log Processing." I use `rsyslog` for aggregating all log entries (system logs, Docker container logs, etc) in my application server and relaying them to my logging and monitoring server. |
-| ***Stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." Although `rsyslog` supports SSL/TLS, it's only single-threaded.<sup>[1]</sup> Using `Stunnel`, all my `rsyslog` transmissions are encrypted and multi-threaded. |
+| ***Hetzner*** | One of the best VPS service providers in the world. Hosts both of my application server and logging server. I like it because it's affordable and pleasant to use (creating new servers, applying firewalls, etc). |
+| ***rsyslog*** | "Rocket-fast System for Log Processing." Aggregates all my `auth.log`, other system logs, and Docker container logs. Relays them to my central logging server, which is soley used for logging purposes with no other exposed services. This way, we can ensure the integrity of the logs even if my application server gets compromised due to zero-day vulnerabilities. |
+| ***Stunnel*** | Listens to localhost TCP port `514` for `rsyslog` and tunnels all the logs to the central logging server via TCP port `6514` with SSL/TLS protocol. Although `rsyslog` supports SSL/TLS out of the box, it's only single-threaded.<sup>[1]</sup> So, I use the TCP protocol in `rsyslog`, which has great support for multithreading, and use `Stunnel` to implement SSl/TCP protocol for encryption. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup services. I use `Tarsnap` for regular backups of my servers. |
 
 <sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
