@@ -47,6 +47,8 @@ Application Server - 3 vCPU, 4GB RAM, 80GB SSD. Ubuntu LTS
 Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS
 ```
 
+<br>
+
 ### 1. [Both] Add a non-root user and configure sshd for security.
 
 ```bash
@@ -87,6 +89,8 @@ PermitRootLogin no
 sudo service ssh restart
 ```
 
+<br>
+
 ### 2. [Application Server] Configure firewall.
 
 ```bash
@@ -109,6 +113,8 @@ sudo ufw status
 # practice to open accept both TCP and UDP as future reserve.
 ```
 
+<br>
+
 ### 3. [Logging Server] Configure firewall.
 
 ```bash
@@ -126,6 +132,8 @@ sudo ufw status
 
 # Also, apply the same firewall rules on Hetzner firewall.
 ```
+
+<br>
 
 ### 4. [Logging Server] Configure SSL/TLS encrypted logging.
 
@@ -293,6 +301,8 @@ sudo systemctl restart rsyslog
 # well. `service` = more high level abstraction than `systemctl`.
 ```
 
+<br>
+
 ### 5. [Application Server] Configure SSL/TLS encrypted logging.
 
 ```bash
@@ -435,6 +445,8 @@ sudo systemctl status stunnel
 sudo systemctl restart rsyslog
 ```
 
+<br>
+
 ### 6. [Both] Configure `logrotate`.
 
 ```bash
@@ -468,6 +480,8 @@ notifempty
 missingok
 ```
 
+<br>
+
 ### 7. [Application Server] Run Docker Compose to deploy Nsustain.
 
 ```bash
@@ -487,6 +501,8 @@ docker compose up -d
 #   https://stackoverflow.com/a/66638930
 sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner.sh /etc/cron.daily/certbot_runner.sh
 ```
+
+<br>
 
 ### 8. [Application Server] Configure `tarsnap` for backups.
 
@@ -516,6 +532,8 @@ tarsnap -x -f ./restored_data
 # TODO: Create tarsnap_backup_runner.sh and chmod +x
 /usr/local/bin/tarsnap -c -f "UTC$(date +'%Y%m%d_%H:%M')" /var/lib/docker/volumes/...
 ```
+
+<br>
 
 ### 9. Useful workflows.
 
