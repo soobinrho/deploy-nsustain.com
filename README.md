@@ -21,10 +21,10 @@
 
 | ***Program*** | ***Purpose*** |
 | ---- | ---- |
-| ***Hetzner*** | One of the best VPS service providers in the world. Hosts both of my application server and logging server. I like it because it's affordable and pleasant to use (creating new servers, applying firewalls, etc). |
+| ***Hetzner*** | One of the best VPS service providers in the world. Hosts both of my application server and logging server. I like it because it's affordable and pleasant to use (creating new servers, applying firewalls, etc). $8 per month for application server. $4 per month for logging server.  |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." Aggregates all my `auth.log`, other system logs, and Docker container logs. Relays them to my central logging server, which is soley used for logging purposes with no other exposed services. This way, we can ensure the integrity of the logs even if my application server gets compromised due to zero-day vulnerabilities. |
 | ***Stunnel*** | Listens to localhost TCP port `514` for `rsyslog` and tunnels all the logs to the central logging server via TCP port `6514` with SSL/TLS protocol. Although `rsyslog` supports SSL/TLS out of the box, it's only single-threaded.<sup>[1]</sup> So, I use the TCP protocol in `rsyslog`, which has great support for multithreading, and use `Stunnel` to implement SSl/TCP protocol for encryption. |
-| ***Tarsnap*** | One of the most, if not the most, secure backup services. I use `Tarsnap` for regular backups of my servers. |
+| ***Tarsnap*** | One of the most, if not the most, secure backup services. `/usr/local/bin/tarsnap -c -f "UTC$(date +'%Y%m%d_%H:%M')" /var/lib/docker/volumes/...` encrypts, deduplicates, compresses, and uploads the data to their AWS backup server. I use `Tarsnap` for scheduled backups of my servers with `cron`. $2 per month. |
 
 <sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
 
@@ -483,7 +483,35 @@ docker compose up -d
 sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner.sh /etc/cron.daily/certbot_runner.sh
 
 # ---------------------------------------------------------------------
-# 7. Useful workflows.
+# 8. [Application Server] Configure `tarsnap` for daily backups.
+# ---------------------------------------------------------------------
+# Install `tarsnap` by following the instructions at:
+#   https://www.tarsnap.com/pkg-deb.html
+
+# Create a key. This key will be stored soley in your system, and will
+# not and must not be sent to anyone else. Follow the instructions at:
+#   https://www.tarsnap.com/gettingstarted.html
+
+# Create a daily cron job compressing the Docker volume files.
+# "Don't apply any compression (gzip, bzip2, zip, tar.gz, etc.) to your
+# data -- Tarsnap itself will compress data after it performs
+# deduplication.
+sudo ln -s /home/soobinrho/deploy-nsustain.com/tarsnap_backup_runner.sh /etc/cron.daily/tarsnap_backup_runner.sh
+
+# How to see all stored archives.
+tarsnap --list-archives
+
+# How to check how much data would be uploaded after deduplication and compression.
+tarsnap -c -f testbackup --dry-run --print-status /usr/home
+
+# How to store an archive.
+tarsnap -x -f ./restored_data
+
+# TODO: Create tarsnap_backup_runner.sh and chmod +x
+/usr/local/bin/tarsnap -c -f "UTC$(date +'%Y%m%d_%H:%M')" /var/lib/docker/volumes/...
+
+# ---------------------------------------------------------------------
+# 9. Useful workflows.
 # ---------------------------------------------------------------------
 # How to update all git submodules.
 git submodule update --rebase --remote
