@@ -47,10 +47,9 @@ Application Server - 3 vCPU, 4GB RAM, 80GB SSD. Ubuntu LTS
 Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS
 ```
 
+### 1. [Both] Add a non-root user and configure sshd for security.
+
 ```bash
-# ---------------------------------------------------------------------
-# 1. [Both] Add a non-root user and configure sshd for security.
-# ---------------------------------------------------------------------
 # [Both] here means run the following commands in both the application
 # server and the monitoring server.
 adduser soobinrho
@@ -86,10 +85,11 @@ PermitRootLogin no
 ```bash
 # Restart SSH
 sudo service ssh restart
+```
 
-# -------------------------------------------------------------------
-# 2. [Application Server] Configure firewall.
-# -------------------------------------------------------------------
+### 2. [Application Server] Configure firewall.
+
+```bash
 # Allow inbound traffic with port 443 TCP/UDP (Cloudflare Tunnel)
 # Allow inbound traffic with port 80  TCP/UDP (Cloudflare Tunnel)
 # Allow inbound traffic with port 22  TCP/UDP from your IP address (ssh)
@@ -107,10 +107,11 @@ sudo ufw status
 # FYI, whenever a service has a designated port - e.g. 22 for SSH -
 # it almost always uses just the TCP protocol, but it's often a good
 # practice to open accept both TCP and UDP as future reserve.
+```
 
-# -------------------------------------------------------------------
-# 3. [Logging Server] Configure firewall.
-# -------------------------------------------------------------------
+### 3. [Logging Server] Configure firewall.
+
+```bash
 # Allow inbound traffic with port 6514 TCP/UDP (rsyslog & Stunnel TLS)
 # Allow inbound traffic with port 22   TCP/UDP from your IP address (ssh)
 sudo ufw reset
@@ -124,10 +125,11 @@ sudo ufw enable
 sudo ufw status
 
 # Also, apply the same firewall rules on Hetzner firewall.
+```
 
-# -------------------------------------------------------------------
-# 4. [Logging Server] Configure SSL/TLS encrypted logging.
-# -------------------------------------------------------------------
+### 4. [Logging Server] Configure SSL/TLS encrypted logging.
+
+```bash
 sudo systemctl start rsyslog
 sudo systemctl enable rsyslog
 
@@ -289,10 +291,11 @@ sudo systemctl restart rsyslog
 
 # By the way, `sudo service rsyslog restart` works perfectly fine as
 # well. `service` = more high level abstraction than `systemctl`.
+```
 
-# -------------------------------------------------------------------
-# 5. [Application Server] Configure SSL/TLS encrypted logging.
-# -------------------------------------------------------------------
+### 5. [Application Server] Configure SSL/TLS encrypted logging.
+
+```bash
 sudo systemctl start rsyslog
 sudo systemctl enable rsyslog
 
@@ -430,10 +433,11 @@ sudo systemctl enable stunnel
 sudo systemctl start stunnel
 sudo systemctl status stunnel
 sudo systemctl restart rsyslog
+```
 
-# -------------------------------------------------------------------
-# 6. [Both] Configure `logrotate`.
-# -------------------------------------------------------------------
+### 6. [Both] Configure `logrotate`.
+
+```bash
 # This config means rotate `daily` and keep `365` copies of it.
 # There will be 365 days worth of logs, and the oldest ones will
 # start to get deleted once 366th day is reached.
@@ -463,10 +467,11 @@ notifempty
 #   https://access.redhat.com/solutions/646903
 missingok
 ```
+
+### 7. [Application Server] Run Docker Compose to deploy Nsustain.
+
 ```bash
-# ---------------------------------------------------------------------
-# 7. [Application Server] Run Docker Compose to deploy Nsustain.
-# ---------------------------------------------------------------------
+cd ~/
 git clone https://github.com/soobinrho/deploy-nsustain.com.git
 cd deploy-nsustain.com
 docker compose build
@@ -481,10 +486,11 @@ docker compose up -d
 # Source:
 #   https://stackoverflow.com/a/66638930
 sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner.sh /etc/cron.daily/certbot_runner.sh
+```
 
-# ---------------------------------------------------------------------
-# 8. [Application Server] Configure `tarsnap` for daily backups.
-# ---------------------------------------------------------------------
+### 8. [Application Server] Configure `tarsnap` for backups.
+
+```bash
 # Install `tarsnap` by following the instructions at:
 #   https://www.tarsnap.com/pkg-deb.html
 
@@ -509,10 +515,11 @@ tarsnap -x -f ./restored_data
 
 # TODO: Create tarsnap_backup_runner.sh and chmod +x
 /usr/local/bin/tarsnap -c -f "UTC$(date +'%Y%m%d_%H:%M')" /var/lib/docker/volumes/...
+```
 
-# ---------------------------------------------------------------------
-# 9. Useful workflows.
-# ---------------------------------------------------------------------
+### 9. Useful workflows.
+
+```bash
 # How to update all git submodules.
 git submodule update --rebase --remote
 
