@@ -535,33 +535,6 @@ tarsnap -x -f ./restored_data
 
 <br>
 
-### 9. Useful workflows.
-
-```bash
-# How to update all git submodules.
-git submodule update --rebase --remote
-
-# How to kill Stunnel for debugging purposes.
-sudo kill $(pgrep stunnel)
-
-# How to get your public IP address.
-curl https://ipinfo.io/ip
-
-# How to see which process is listening on port 80.
-sudo netstat -pna | grep 80
-
-# Install lnav: the logfile navigator.
-sudo snap install lnav
-
-# How to read logs. Automatically follows all the log files in
-# the selected directory in real time, and it does so with color coding
-# and vim key bindings for navigation (hjkl, gg, GG, / for search, etc).
-cd /var/log
-sudo lnav .
-```
-
-<br>
-
 ## Extra Readings
 
 ### What are network protocols?
@@ -865,5 +838,32 @@ journalctl -F <field name>
 "Lines of error priority and higher are highlighted with red color and a bold font is used for lines with notice and warning priority...
 The time stamps are converted for the local time zone of your system...
 All logged data is shown, including rotated logs."
+
+<br>
+
+## Useful Commands
+
+```bash
+# How to update all git submodules.
+git submodule update --rebase --remote
+
+# How to kill Stunnel for debugging purposes.
+sudo kill $(pgrep stunnel)
+
+# How to get your public IP address.
+curl https://ipinfo.io/ip
+
+# How to see which process is listening on port 80.
+sudo netstat -pna | grep 80
+
+# Install lnav: the logfile navigator.
+sudo snap install lnav
+
+# How to read logs. Automatically follows all the log files in
+# the selected directory in real time, and it does so with color coding
+# and vim key bindings for navigation (hjkl, gg, GG, / for search, etc).
+cd /var/log
+sudo lnav .
+```
 
 <br>
