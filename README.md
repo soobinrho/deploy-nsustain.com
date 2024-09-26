@@ -72,13 +72,18 @@ chown -R soobinrho:soobinrho /home/soobinrho/.ssh
 su - soobinrho
 
 # Test ssh connection to the new user.
-# Then, open the sshd config file for more secure settings.
+# Then, make sure sshd is securely configured.
 sudo vim /etc/ssh/sshd_config
+```
 
-# Add these two lines at the end of the config file:
+Append to the end of `/etc/ssh/ssd_config`.
+
+```
 PasswordAuthentication no
 PermitRootLogin no
+```
 
+```bash
 # Restart SSH
 sudo service ssh restart
 
@@ -126,49 +131,100 @@ sudo ufw status
 sudo systemctl start rsyslog
 sudo systemctl enable rsyslog
 
-# Append to the end of rsyslog config file.
+# Configure rsyslog to receive remote logs.
 # Source:
 #   https://www.rsyslog.com/receiving-messages-from-a-remote-system/
+sudo mv /etc/syslog.conf /etc/syslog.conf.backup
 sudo vim /etc/rsyslog.conf
 ```
+
+Copy and paste this to `/etc/rsyslog.conf`.
+
 ```
 # ---------------------------------------------------------------------
+# Default rules that come installed with `rsyslog`.
+# ---------------------------------------------------------------------
+# /etc/rsyslog.conf configuration file for rsyslog
+#
+# For more information install rsyslog-doc and see
+# /usr/share/doc/rsyslog-doc/html/configuration/index.html
+
+# provides support for local system logging
+module(load="imuxsock") 
+
+# provides kernel logging support and enable non-kernel klog messages
+module(load="imklog" permitnonkernelfacility="on")
+
+# Filter duplicated messages
+$RepeatedMsgReduction on
+
+# Set the default permissions for all log files.
+$FileOwner syslog
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+$PrivDropToUser syslog
+$PrivDropToGroup syslog
+
+# Where to place spool and state files
+$WorkDirectory /var/spool/rsyslog
+
+# ---------------------------------------------------------------------
 # Configure rsyslog to listen and receive remote logs.
-# Source:
+# Source
 #   https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-configuring_rsyslog_on_a_logging_server
 # ---------------------------------------------------------------------
-template(name=”template_remote_auth” type=”list”) {
-  constant(value="/var/log/remote/%HOSTNAME%/auth_%PROGRAMNAME:::secpath-replace%.log”)
+template(name="template_remote_auth" type="list") {
+  constant(value="/var/log/remote/")
+  property(name="hostname" SecurePath="replace")
+  constant(value="/auth.log")
 }
 
-template(name=”template_remote” type=”list”) {
-  constant(value="/var/log/remote/%HOSTNAME%/%PROGRAMNAME:::secpath-replace%.log”)
+template(name="template_remote" type="list") {
+  constant(value="/var/log/remote/")
+  property(name="hostname" SecurePath="replace")
+  constant(value="/")
+  property(name="programname" SecurePath="replace")
+  constant(value=".log")
+}
+
+# This ruleset applies to all remote logs.
+ruleset(name="ruleset_remote") {
+  # Save all `auth` logs separately so that it's easy to view them.
+  authpriv.*;auth.* action(type="omfile" DynaFile="template_remote_auth")
+  & stop
+
+  # Every log with a priority of `info` or greater, except for `auth`.
+  *.info;authpriv.none;auth.none action(type="omfile" DynaFile="template_remote")
+  & stop
 }
 
 module(load="imtcp")
-ruleset(name="ruleset_remote"){
-  authpriv.*  action(type="omfile" DynaFile="template_remote_autb")
-  *.info;authpriv.none action(type="omfile" DynaFile="template_remote")
-}
 input(type="imtcp" port="514" ruleset="ruleset_remote")
-```
-```bash
-# Configure logrotate so that logs don't take too much space.
-# This config means compress `daily` and keep `365` copies of it,
-# so there will be 365 days worth of logs, and the oldest ones will
-# start to get deleted once 366th day is reached.
-sudo vim /etc/logrotate.d/nsustain
-```
-```
-/var/log/nsustain/*.log {
-    daily
-    rotate 365
-    copytruncate
-    compress
-    delaycompress
-    notifempty
-    missingok
+
+# ---------------------------------------------------------------------
+# Configure rules for local logs.
+# ---------------------------------------------------------------------
+template(name="template_local_auth" type="list") {
+  constant(value="/var/log/auth.log")
 }
+
+template(name="template_local" type="list") {
+  constant(value="/var/log/")
+  property(name="programname" SecurePath="replace")
+  constant(value=".log")
+}
+
+# Save all `auth` logs separately so that it's easy to view them.
+authpriv.*;auth.* action(type="omfile" DynaFile="template_local_auth")
+& stop
+
+# Every log with a priority of `info` or greater, except for `auth`.
+*.info;authpriv.none;auth.none action(type="omfile" DynaFile="template_local")
+& stop
+
+# You can test `rsyslog` config files with `rsyslogd -N1` command.
 ```
 ```bash
 # Configure Stunnel to encrypt all incoming logs with SSL/TLS.
@@ -177,15 +233,18 @@ sudo vim /etc/logrotate.d/nsustain
 sudo apt install -y stunnel
 sudo vim /etc/stunnel/stunnel.conf
 ```
+
+Copy and paste to `/etc/stunnel/stunnel.conf`.
+
 ```
 ; It is recommended to drop root privileges if stunnel is started by root
-;setuid = stunnel4
-;setgid = stunnel4
+;setuid=stunnel4
+;setgid=stunnel4
 
 ; Debugging stuff (may be useful for troubleshooting)
-;foreground = yes
-;debug = info
-;output = /var/log/stunnel.log
+;foreground=yes
+;debug=info
+;output=/var/log/stunnel.log
 
 [rsyslog]
 cert=/etc/stunnel/logging_server_public_key.pem
@@ -205,6 +264,9 @@ sudo openssl req -nodes -x509 -newkey rsa:4096 -keyout logging_server_private_ke
 #   http://kb.ictbanking.net/article.php?id=704
 sudo vim /usr/lib/systemd/system/stunnel.service
 ```
+
+Copy and paste to `/usr/lib/systemd/system/stunnel.service`.
+
 ```
 [Unit]
 Description=TLS tunnel for network daemons
@@ -237,6 +299,9 @@ sudo systemctl enable rsyslog
 # Change the Docker's default logging driver from json to syslog.
 sudo vim /etc/docker/daemon.json
 ```
+
+Copy and paste to `/etc/docker/daemon.json`.
+
 ```
 {
   "log-driver": "syslog",
@@ -259,31 +324,79 @@ docker inspect <containerName> | grep -A 5 LogConfig
 # How to check if rsyslog server is listening.
 echo "This is a test log message." | nc <server_ip> <port>
 
-# Append to the end of rsyslog config file.
+# Configure rsyslog to relay all log messages to the centralized
+# logging server.
 # Source:
 #   https://www.rsyslog.com/sending-messages-to-a-remote-syslog-server/
+sudo mv /etc/rsyslog.conf /etc/rsyslog.conf.backup
 sudo vim /etc/rsyslog.conf
 ```
+
+Copy and paste to `/etc/rsyslog.conf`.
+
 ```
+# ---------------------------------------------------------------------
+# Default rules that come installed with `rsyslog`.
+# ---------------------------------------------------------------------
+# /etc/rsyslog.conf configuration file for rsyslog
+#
+# For more information install rsyslog-doc and see
+# /usr/share/doc/rsyslog-doc/html/configuration/index.html
+
+# provides support for local system logging
+module(load="imuxsock") 
+
+# provides kernel logging support and enable non-kernel klog messages
+module(load="imklog" permitnonkernelfacility="on")
+
+# Filter duplicated messages
+$RepeatedMsgReduction on
+
+# Set the default permissions for all log files.
+$FileOwner syslog
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+$PrivDropToUser syslog
+$PrivDropToGroup syslog
+
+# Where to place spool and state files
+$WorkDirectory /var/spool/rsyslog
+
+# ---------------------------------------------------------------------
+# Configure rsyslog to send all logs to the remote logging server.
+# Source
+#   https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s1-configuring_rsyslog_on_a_logging_server
+# ---------------------------------------------------------------------
 # "rsyslog keeps messages in memory if the remote server is not reachable.
 # A file on disk is created only if rsyslog runs out of the configured memory queue space or needs to shut down."
 # Source:
 #   https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-viewing_and_managing_log_files#s2-defining_queues
-*.*  action(type="omfwd" target="127.0.0.1" port="514" protocol="tcp"
+*.* action(
+  type="omfwd"
+  target="127.0.0.1"
+  port="514"
+  protocol="tcp"
   queue.type="linkedList"
-  queue.filename=”queue_disk_backup”
+  queue.filename="queue_disk_backup"
   queue.saveonshutdown="on"
   action.resumeRetryCount="-1"
-  queue.size="10000")
+  queue.size="10000"
+)
+
+# You can test `rsyslog` config files with `rsyslogd -N1` command.
 ```
 ```bash
-
 # Configure logs to be sent to the centralized server with TLS 1.3
 # Source:
 #   https://www.rsyslog.com/doc/historical/stunnel.html
 sudo apt install -y stunnel
 sudo vim /etc/stunnel/stunnel.conf
 ```
+
+Copy and paste to `/etc/stunnel/stunnel.conf`.
+
 ```
 [rsyslog]
 sslVersionMin=TLSv1.3
@@ -295,6 +408,9 @@ client=yes
 # Add a systemd entry for Stunnel.
 sudo vim /usr/lib/systemd/system/stunnel.service
 ```
+
+Copy and paste to `/usr/lib/systemd/system/stunnel.service`.
+
 ```
 [Unit]
 Description=TLS tunnel for network daemons
@@ -315,8 +431,41 @@ sudo systemctl start stunnel
 sudo systemctl status stunnel
 sudo systemctl restart rsyslog
 
+# -------------------------------------------------------------------
+# 6. [Both] Configure `logrotate`.
+# -------------------------------------------------------------------
+# This config means rotate `daily` and keep `365` copies of it.
+# There will be 365 days worth of logs, and the oldest ones will
+# start to get deleted once 366th day is reached.
+sudo mv /etc/logrotate.conf /etc/logrotate.conf.backup
+sudo vim /etc/logrotate.conf
+```
+
+Copy and paste this to `/etc/logrotate.conf`.
+
+```
+# see "man logrotate" for detail
+
+# use the adm group by default, since this is the owning group
+# of /var/log/.
+su root adm
+
+daily
+rotate 365
+copytruncate
+compress
+delaycompress
+notifempty
+
+# "If the log file is missing, go on to the next one without issuing
+# an error message."
+# Source:
+#   https://access.redhat.com/solutions/646903
+missingok
+```
+```bash
 # ---------------------------------------------------------------------
-# 6. [Application Server] Run Docker Compose to deploy Nsustain.
+# 7. [Application Server] Run Docker Compose to deploy Nsustain.
 # ---------------------------------------------------------------------
 git clone https://github.com/soobinrho/deploy-nsustain.com.git
 cd deploy-nsustain.com
@@ -346,7 +495,7 @@ curl https://ipinfo.io/ip
 sudo netstat -pna | grep 80
 
 # Install lnav: the logfile navigator.
-sudo snap install -y lnav
+sudo snap install lnav
 
 # How to view /etc/var/syslog in pretty format.
 sudo lnav
@@ -614,7 +763,7 @@ While I use `rsyslog` for storing and relaying logs to my centralized logging se
 > `rsyslog` is in charge of storing all logs in files, while "the journal data is stored in memory and lost between reboots."
 > 
 > Since the logging server is receiving the logs remotely from the application server, the logging server's `journald` won't show you the logs.
-> Instead, if I'm SSH'ing to the logging server, I would use `vim` to see the `rsyslog` log files directly at `/var/log/remote`.
+> Instead, if I'm SSH'ing to the logging server, I would use `lnav` to see the `rsyslog` log files directly at `/var/log/remote`.
 >
 > Source:
 >   https://gist.github.com/JPvRiel/b7c185833da32631fa6ce65b40836887
