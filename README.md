@@ -108,9 +108,12 @@ sudo ufw enable
 # Confirm current firewall rules.
 sudo ufw status
 
-# FYI, whenever a service has a designated port - e.g. 22 for SSH -
-# it almost always uses just the TCP protocol, but it's often a good
-# practice to open accept both TCP and UDP as future reserve.
+# FYI, whenever a service has a designated port, it almost always uses
+# just one of TCP or UDP, but it's customary to accept both TCP and UDP
+# as future reserve in case of implementation changes in the program.
+
+# Apply the same firewall rules on Hetzner's firewall settings as
+# an extra layer of security.
 ```
 
 <br>
@@ -130,7 +133,8 @@ sudo ufw enable
 # Confirm current firewall rules.
 sudo ufw status
 
-# Also, apply the same firewall rules on Hetzner firewall.
+# Apply the same firewall rules on Hetzner's firewall settings as
+# an extra layer of security.
 ```
 
 <br>
