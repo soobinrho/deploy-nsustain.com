@@ -24,7 +24,7 @@
 | ***Hetzner*** | One of the best VPS service providers in the world; it's affordable and pleasant to use. Both my application server and logging server are hosted here. |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." I use `rsyslog` for aggregating all log entries (system logs, Docker container logs, etc) in my application server and relaying them to my logging and monitoring server. |
 | ***Stunnel*** | "A multiplatform GNU/GPL-licensed proxy encrypting arbitrary TCP connections with SSL/TLS." Although `rsyslog` supports SSL/TLS, it's only single-threaded.<sup>[1]</sup> Using `Stunnel`, all my `rsyslog` transmissions are encrypted and multi-threaded. |
-| ***Tarsnap*** | One of the most, if not the most, secure backup service. I use `Tarsnap` for regular backups of my servers. |
+| ***Tarsnap*** | One of the most, if not the most, secure backup services. I use `Tarsnap` for regular backups of my servers. |
 
 <sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
 
