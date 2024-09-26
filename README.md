@@ -31,10 +31,10 @@
 <br>
 
 > [!NOTE]  
-> `syslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary
-> logging system. `journald` was created more recently, but I chose to
-> use `syslog` (rsyslog) because `syslog` is said to be simpler at
-> spooling and saving logs to a centralized logging server.
+> `syslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary logging system.
+> `journald` and `rsyslog` complement each other.
+> While `rsyslog` is especially good at storing and relaying logs to a centralized logging server,
+> `journald` is great at viewing and filtering logs for analysis.
 
 <sub>[2] https://datatracker.ietf.org/doc/html/rfc5424</sub>
 
