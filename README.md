@@ -485,6 +485,9 @@ sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner.sh /etc/cron.daily
 # ---------------------------------------------------------------------
 # 7. Useful workflows.
 # ---------------------------------------------------------------------
+# How to update all git submodules.
+git submodule update --rebase --remote
+
 # How to kill Stunnel for debugging purposes.
 sudo kill $(pgrep stunnel)
 
