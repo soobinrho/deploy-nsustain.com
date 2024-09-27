@@ -52,6 +52,10 @@ Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS
 ### 1. [Both] Add a non-root user and configure sshd for security.
 
 ```bash
+# Enable auto updates so that security patches are installed promptly.
+sudo apt install -y unattended-upgrades
+sudo dpkg-reconfigure -plow unattended-upgrades
+
 # [Both] here means run the following commands in both the application
 # server and the monitoring server.
 adduser soobinrho
