@@ -423,6 +423,18 @@ sudo vim /etc/stunnel/stunnel.conf
 Copy and paste to `/etc/stunnel/stunnel.conf`.
 
 ```
+; chroot for security enhancement.
+; Source:
+;   https://stunnel-users.mirt.narkive.com/G6ONH6Wr/stunnel-in-client-server-configuration
+chroot = /var/lib/stunnel4
+
+; It is recommended to drop root privileges if stunnel is started by root
+setuid=stunnel4
+setgid=stunnel4
+
+; PID is created inside chroot jail
+pid = /stunnel.pid
+
 [rsyslog]
 sslVersionMin=TLSv1.3
 accept  = 127.0.0.1:514
