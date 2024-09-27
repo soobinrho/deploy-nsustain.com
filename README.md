@@ -868,8 +868,11 @@ All logged data is shown, including rotated logs."
 ## Useful Commands
 
 ```bash
+# How to update all git submodules (required for first time).
+git submodule update --init --recursive
+
 # How to update all git submodules.
-git submodule update --rebase --remote
+git submodule update --recursive --remote
 
 # How to kill Stunnel for debugging purposes.
 sudo kill $(pgrep stunnel)
