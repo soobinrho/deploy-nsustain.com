@@ -56,6 +56,9 @@ Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS
 sudo apt install -y unattended-upgrades
 sudo dpkg-reconfigure -plow unattended-upgrades
 
+# Set timezone so that log times match with each other.
+ sudo timedatectl set-timezone "America/Chicago"
+
 # [Both] here means run the following commands in both the application
 # server and the monitoring server.
 adduser soobinrho
@@ -520,14 +523,14 @@ docker compose build
 docker compose up -d
 
 # Issue a SSL/TLS certificate using Letsencrypt.
-./certbot_runner.sh
+./certbot_runner
 
 # Set up a cron job for certbot renewal.
 # This cron job is set to run every day. The `certbot` is smart enough
 # to only renew the certificate when it is about to expire.
 # Source:
 #   https://stackoverflow.com/a/66638930
-sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner.sh /etc/cron.daily/certbot_runner.sh
+sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner /etc/cron.daily/certbot_runner
 ```
 
 <br>
@@ -538,27 +541,40 @@ sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner.sh /etc/cron.daily
 # Install `tarsnap` by following the instructions at:
 #   https://www.tarsnap.com/pkg-deb.html
 
-# Create a key. This key will be stored soley in your system, and will
-# not and must not be sent to anyone else. Follow the instructions at:
-#   https://www.tarsnap.com/gettingstarted.html
+# This is the super privilege key. Move this to another device that is
+# secured and use it only when you need it to use the backup archives.
+# This key contains all the read, write, and delete privileges, and
+# must not be used unless necessary.
+sudo tarsnap-keygen \
+  --keyfile /root/tarsnap_all_privileges.key \
+  --passphrased \
+  --user soobinrho@gmail.com \
+  --machine nsustain
+
+# Generate key with only the write privilege. Keep the key in
+# the application server. This will be used with `cron` for daily
+# automatic backups.
+sudo tarsnap-keymgmt -w \
+  --outkeyfile /root/tarsnap.key \
+  /root/tarsnap_all_privileges.key
 
 # Create a daily cron job compressing the Docker volume files.
 # "Don't apply any compression (gzip, bzip2, zip, tar.gz, etc.) to your
 # data -- Tarsnap itself will compress data after it performs
 # deduplication.
-sudo ln -s /home/soobinrho/deploy-nsustain.com/tarsnap_backup_runner.sh /etc/cron.daily/tarsnap_backup_runner.sh
+sudo ln -s /home/soobinrho/deploy-nsustain.com/tarsnap_runner /etc/cron.daily/tarsnap_runner
 
 # How to see all stored archives.
 tarsnap --list-archives
 
 # How to check how much data would be uploaded after deduplication and compression.
-tarsnap -c -f testbackup --dry-run --print-status /usr/home
+tarsnap -c -f testbackup --dry-run --print-stats --humanize-numbers /usr/home
 
 # How to store an archive.
 tarsnap -x -f ./restored_data
 
-# TODO: Create tarsnap_backup_runner.sh and chmod +x
-/usr/local/bin/tarsnap -c -f "UTC$(date +'%Y%m%d_%H:%M')" /var/lib/docker/volumes/...
+# How to print all global status and of all backed-up archives.
+tarsnap --print-stats -f '*'
 ```
 
 <br>

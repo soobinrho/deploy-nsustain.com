@@ -1,4 +1,20 @@
 #!/usr/bin/env bash
 
 cd /home/soobinrho/deploy-nsustain.com
-docker compose exec nginx certbot certonly --webroot -d nsustain.com -d beemovr.nsustain.com -d goodlifefarms.nsustain.com --text --non-interactive --agree-tos --email soobinrho@nsustain.com --webroot-path /var/www/letsencrypt/ --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges=http | xargs logger --id --priority cron.info
+docker compose exec nginx certbot certonly --text --non-interactive \
+  --agree-tos --verbose --keep-until-expiring --webroot \
+  --webroot-path /var/www/letsencrypt/ \
+  --server https://acme-v02.api.letsencrypt.org/directory \
+  --rsa-key-size 4096 \
+  --email soobinrho@nsustain.com \
+  --preferred-challenges=http \
+  -d nsustain.com \
+  -d beemovr.nsustain.com \
+  -d goodlifefarms.nsustain.com 2>&1 | \
+    xargs logger --id --priority user.info -t certbot 
+
+if [ $? -eq 0 ]; then
+	logger --id --priority user.info -t certbot "Certbot SSL/TLS certificate renewal script success."
+else
+	logger --id --priority user.err -t certbot "Certbot SSL/TLS certificate renewal script error."
+fi
