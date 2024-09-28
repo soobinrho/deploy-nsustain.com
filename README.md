@@ -544,7 +544,8 @@ sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner /etc/cron.daily/ce
 # This is the super privilege key. Move this to another device that is
 # secured and use it only when you need it to use the backup archives.
 # This key contains all the read, write, and delete privileges, and
-# must not be used unless necessary.
+# must not be used unless necessary. This way, even if the application
+# server gets compromised, the backups can remain relatively safe.
 sudo tarsnap-keygen \
   --keyfile /root/tarsnap_all_privileges.key \
   --passphrased \
@@ -564,17 +565,17 @@ sudo tarsnap-keymgmt -w \
 # deduplication.
 sudo ln -s /home/soobinrho/deploy-nsustain.com/tarsnap_runner /etc/cron.daily/tarsnap_runner
 
-# How to see all stored archives.
-tarsnap --list-archives
-
 # How to check how much data would be uploaded after deduplication and compression.
-tarsnap -c -f testbackup --dry-run --print-stats --humanize-numbers /usr/home
+sudo tarsnap -c -f testbackup --dry-run --print-stats --humanize-numbers /usr/home
+
+# How to see all stored archives.
+sudo tarsnap --list-archives --keyfile /root/tarsnap_all_privileges.key
 
 # How to store an archive.
-tarsnap -x -f ./restored_data
+sudo tarsnap -x -f ./restored_data --keyfile /root/tarsnap_all_privileges.key
 
 # How to print all global status and of all backed-up archives.
-tarsnap --print-stats -f '*'
+sudo tarsnap --print-stats --humanize-numbers -f '*' --keyfile /root/tarsnap_all_privileges.key
 ```
 
 <br>
