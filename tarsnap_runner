@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-sudo tarsnap -c --print-stats --humanize-numbers \
+find . -type f -name ".env*" | \
+  xargs sudo tarsnap -c \
+  --print-stats \
+  --humanize-numbers \
   -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
-  /var/lib/docker/volumes/ \
-  /home/soobinrho/deploy-nsustain.com/**/.env* 2>&1 | \
+  --exclude *.example \
+  /var/lib/docker/volumes/ 2>&1 | \
     xargs logger --id --priority user.info -t tarsnap
 
 if [ $? -eq 0 ]; then
