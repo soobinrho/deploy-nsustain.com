@@ -571,7 +571,7 @@ sudo tarsnap -c -v -f testbackup --dry-run --print-stats --humanize-numbers /usr
 # How to see all stored archives.
 sudo tarsnap -v --list-archives --keyfile /root/tarsnap_all_privileges.key
 
-# How to store an archive.
+# How to restore an archive.
 sudo tarsnap -x -v -f ./restored_data --keyfile /root/tarsnap_all_privileges.key
 
 # How to print all global status and of all backed-up archives.
