@@ -869,6 +869,21 @@ All logged data is shown, including rotated logs."
 
 <br>
 
+### Why do I use `Tarsnap`?
+
+https://www.tarsnap.com/flexibility.html
+
+"Unlike backup systems (tar included) which work on a 'full plus incrementals' model of backups — that is, you start by creating an archive containing everything, and thereafter you create archives which only contain modified files — Tarsnap works on a snapshotting model: Every Tarsnap archive acts like it is completely independent of all other archives.
+(Tarsnap has magic going on behind the scenes to efficiently store archives, so you get the same or better performance than the full-plus-incrementals model provides.)"
+
+"Due to Tarsnap's 'de-duplication' functionality, it uses the same or less storage than a traditional full-plus-incrementals backup system, while still providing the flexibility of allowing archives to be created and deleted independently of each other — and in the case of log files, mail spools, and other large files which have small amounts of data appended to them frequently, Tarsnap uses far less bandwidth and storage than incremental backups, since Tarsnap avoids storing multiple copies of the unchanging segments of files. We have collected a few examples of deduplication efficiency."
+
+"When a system is registered with the Tarsnap service via the tarsnap-keygen utility, all of these keys are generated and stored in a single key file; but using the tarsnap-keymgmt utility, 'restricted' key files can be created which can be used to do any subset of...
+the -r (list and extract archives), -w (write archives), [and] -d (delete archives)...
+This makes it possible to set up a system to automatically store archives daily (e.g., via a cron job) while not being able to read those archives back or delete them — ensuring that even if someone breaks into the system and does his best to delete everything, your data will still be safe."
+
+<br>
+
 ## Useful Commands
 
 ```bash
