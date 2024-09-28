@@ -542,10 +542,10 @@ sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner /etc/cron.daily/ce
 #   https://www.tarsnap.com/pkg-deb.html
 
 # This is the super privilege key. Move this to another device that is
-# secured and use it only when you need it to use the backup archives.
-# This key contains all the read, write, and delete privileges, and
-# must not be used unless necessary. This way, even if the application
-# server gets compromised, the backups can remain relatively safe.
+# secured and use it only when you need it to view and/or restore
+# the backup archives. This key contains all the read, write, and delete
+# privileges. This must not be used unless necessary. This way, even if
+# the application server gets compromised, the backups are isolated.
 sudo tarsnap-keygen \
   --keyfile /root/tarsnap_all_privileges.key \
   --passphrased \
