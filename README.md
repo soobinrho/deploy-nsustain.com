@@ -566,13 +566,13 @@ sudo tarsnap-keymgmt -w \
 sudo ln -s /home/soobinrho/deploy-nsustain.com/tarsnap_runner /etc/cron.daily/tarsnap_runner
 
 # How to check how much data would be uploaded after deduplication and compression.
-sudo tarsnap -c -f testbackup --dry-run --print-stats --humanize-numbers /usr/home
+sudo tarsnap -c -v -f testbackup --dry-run --print-stats --humanize-numbers /usr/home
 
 # How to see all stored archives.
-sudo tarsnap --list-archives --keyfile /root/tarsnap_all_privileges.key
+sudo tarsnap -v --list-archives --keyfile /root/tarsnap_all_privileges.key
 
 # How to store an archive.
-sudo tarsnap -x -f ./restored_data --keyfile /root/tarsnap_all_privileges.key
+sudo tarsnap -x -v -f ./restored_data --keyfile /root/tarsnap_all_privileges.key
 
 # How to print all global status and of all backed-up archives.
 sudo tarsnap --print-stats --humanize-numbers -f '*' --keyfile /root/tarsnap_all_privileges.key

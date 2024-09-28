@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo tarsnap -c --print-stats --humanize-numbers \
+sudo tarsnap -c -v --print-stats --humanize-numbers \
   -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
   /var/lib/docker/volumes/ \
   /home/soobinrho/deploy-nsustain.com/**/.env* 2>&1 | \
