@@ -272,9 +272,42 @@ sudo ufw status
 # an extra layer of security.
 ```
 
+### 3. [Application Server] Configure Cloudflare Firewall.
+
+I noticed when I was looking at `sudo lnav /var/log/remote/nsustain/docker.log` that there are too many http attempts from botnets requesting for URL's that match known vulnerabilities.
+To drop these requests entirely, go to Cloudflare - Security - WAF (Web Application Firewall) - Custom Rules.
+Add the following two rules:
+
+1. `Allowlist`
+
+```
+(http.request.uri.path wildcard r"/") or (http.request.uri.path wildcard r"/*.jpg") or (http.request.uri.path wildcard r"/*.png") or (http.request.uri.path wildcard r"/*.svg") or (http.request.uri.path wildcard r"/api/*") or (http.request.uri.path wildcard r"/assets/*") or (http.request.uri.path wildcard r"/d/*") or (http.request.uri.path wildcard r"/tags") or (http.request.uri.path wildcard r"/t/*") or (http.request.uri.path wildcard r"/u/*") or (http.request.uri.path wildcard r"/settings") or (http.request.uri.path wildcard r"/admin") or (http.request.uri.path wildcard r"/t/*") or (http.request.uri.path wildcard r"/cdn-cgi/*") or (http.request.uri.path wildcard r"/_next/*") or (http.request.uri.path wildcard r"/prototype")
+```
+
+```
+Choose action: Skip
+Place at: First
+```
+
+2. `Block All Except Allowlist`
+
+```
+(http.request.full_uri wildcard r"*")
+```
+
+```
+Choose action: Block
+Place at: Custom
+Select which rule this will fire after: Allowlist
+```
+
+Now, all requests to non-existent URL paths will be dropped and therefore the log files will not be flooded with requests from botnets anymore.
+All requests to the allowlist will pass through as expected.
+If new URL paths need to be added, add the new URL path to `Allowlist` and use Chrome developer tool (F12, Network) to confirm all resources are coming through.
+
 <br>
 
-### 3. [Logging Server] Configure firewall.
+### 4. [Logging Server] Configure firewall.
 
 ```bash
 # Allow inbound traffic with port 6514 TCP/UDP (rsyslog & Stunnel TLS)
@@ -296,7 +329,7 @@ sudo ufw status
 
 <br>
 
-### 4. [Logging Server] Configure SSL/TLS encrypted logging.
+### 5. [Logging Server] Configure SSL/TLS encrypted logging.
 
 ```bash
 sudo systemctl start rsyslog
@@ -472,7 +505,7 @@ sudo systemctl restart rsyslog
 
 <br>
 
-### 5. [Application Server] Configure SSL/TLS encrypted logging.
+### 6. [Application Server] Configure SSL/TLS encrypted logging.
 
 ```bash
 sudo systemctl start rsyslog
@@ -628,7 +661,7 @@ sudo systemctl restart rsyslog
 
 <br>
 
-### 6. [Both] Configure `logrotate`.
+### 7. [Both] Configure `logrotate`.
 
 ```bash
 cd /etc/logrotate.d
@@ -682,7 +715,7 @@ Copy and paste this to `/etc/logrotate.d/all`.
 
 <br>
 
-### 7. [Application Server] Run Docker Compose to deploy Nsustain.
+### 8. [Application Server] Run Docker Compose to deploy Nsustain.
 
 ```bash
 cd ~/
@@ -704,7 +737,7 @@ sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner /etc/cron.daily/ce
 
 <br>
 
-### 8. [Application Server] Configure `tarsnap` for backups.
+### 9. [Application Server] Configure `tarsnap` for backups.
 
 ```bash
 # Install `tarsnap` by following the instructions at:
