@@ -631,34 +631,53 @@ sudo systemctl restart rsyslog
 ### 6. [Both] Configure `logrotate`.
 
 ```bash
+cd /etc/logrotate.d
+for fileName in *; do sudo mv "${fileName}" "${fileName}.backup"; done
+sudo mkdir ../logrotate.d.backup
+sudo mv *.backup ../logrotate.d.backup/
+
 # This config means rotate `daily` and keep `365` copies of it.
 # There will be 365 days worth of logs, and the oldest ones will
 # start to get deleted once 366th day is reached.
-sudo mv /etc/logrotate.conf /etc/logrotate.conf.backup
-sudo vim /etc/logrotate.conf
+sudo vim all
 ```
 
-Copy and paste this to `/etc/logrotate.conf`.
+Copy and paste this to `/etc/logrotate.d/all`.
 
 ```
 # see "man logrotate" for detail
 
-# use the adm group by default, since this is the owning group
-# of /var/log/.
-su root adm
+/var/log/*.log {
+    su root adm
+    daily
+    rotate 365
+    copytruncate
+    compress
+    delaycompress
+    notifempty
 
-daily
-rotate 365
-copytruncate
-compress
-delaycompress
-notifempty
+    # "If the log file is missing, go on to the next one without issuing
+    # an error message."
+    # Source:
+    #   https://access.redhat.com/solutions/646903
+    missingok
+}
 
-# "If the log file is missing, go on to the next one without issuing
-# an error message."
-# Source:
-#   https://access.redhat.com/solutions/646903
-missingok
+/var/log/remote/*/*.log {
+    su root adm
+    daily
+    rotate 365
+    copytruncate
+    compress
+    delaycompress
+    notifempty
+
+    # "If the log file is missing, go on to the next one without issuing
+    # an error message."
+    # Source:
+    #   https://access.redhat.com/solutions/646903
+    missingok
+}
 ```
 
 <br>
