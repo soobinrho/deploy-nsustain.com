@@ -258,6 +258,7 @@ sudo ufw default allow outgoing
 sudo ufw allow 443
 sudo ufw allow 80
 sudo ufw allow from <home IP> to any port 22
+sudo ufw limit ssh
 sudo ufw enable
 
 # Confirm current firewall rules.
@@ -283,6 +284,7 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow from <application server IP> to any port 6514
 sudo ufw allow from <home IP> to any port 22
+sudo ufw limit ssh
 sudo ufw enable
 
 # Confirm current firewall rules.
