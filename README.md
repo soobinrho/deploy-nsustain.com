@@ -49,7 +49,7 @@ Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS
 
 <br>
 
-### 1. [Both] Add a non-root user and configure sshd for security.
+### 1. [Both] Add a non-root user and configure `sshd` for security.
 
 ```bash
 # Enable auto updates so that security patches are installed promptly.
@@ -79,18 +79,166 @@ chown -R soobinrho:soobinrho /home/soobinrho/.ssh
 # Login to the new user.
 su - soobinrho
 
+# "All Diffie-Hellman moduli in use should be at least 3072-bit-long."
+# Source:
+#   https://infosec.mozilla.org/guidelines/openssh#modern-openssh-67
+sudo awk '$5 >= 3071' /etc/ssh/moduli > ~/moduli.tmp && sudo mv ~/moduli.tmp /etc/ssh/moduli
+
 # Test ssh connection to the new user.
 # Then, make sure sshd is securely configured.
+sudo mv /etc/ssh/sshd_confg /etc/ssh/sshd_config.backup
 sudo vim /etc/ssh/sshd_config
 ```
 
-Append to the end of `/etc/ssh/ssd_config`.
+Copy and paste to `/etc/ssh/ssd_config`.
 
 ```
+# Name: K4YT3X Hardened OpenSSH Configuration
+# Author: K4YT3X
+# Contributor: IceCodeNew
+# Contributor: brxken128
+# Contributor: CookieCr2nk
+# Date Created: October 5, 2020
+# Last Updated: May 6, 2024
+
+# Licensed under the GNU General Public License Version 3 (GNU GPL v3),
+#   available at: https://www.gnu.org/licenses/gpl-3.0.txt
+# (C) 2020-2024 K4YT3X
+
+########## Features ##########
+
+# accept locale-related environment variables
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+
+# disallow ssh-agent forwarding to prevent lateral movement
+AllowAgentForwarding no
+
+# prevent TCP ports from being forwarded over SSH tunnels
+# **please be aware that disabling TCP forwarding does not prevent port forwarding**
+# any user with an interactive login shell can spin up his/her own instance of sshd
+AllowTcpForwarding no
+
+# prevent StreamLocal (Unix-domain socket) forwarding
+AllowStreamLocalForwarding no
+
+# disables all forwarding features
+# overrides all other forwarding switches
+DisableForwarding yes
+
+# disallow remote hosts from connecting to forwarded ports
+# i.e. forwarded ports are forced to bind to 127.0.0.1 instead of 0.0.0.0
+GatewayPorts no
+
+# prevent tun device forwarding
+PermitTunnel no
+
+# suppress MOTD
+PrintMotd no
+
+# disable X11 forwarding since it is not necessary
+X11Forwarding no
+
+########## Authentication ##########
+
+# permit only the specified users to login
+#AllowUsers k4yt3x
+
+# permit only users within the specified groups to login
+#AllowGroups k4yt3x
+
+# uncomment the following options to permit only pubkey authentication
+# be aware that this will disable password authentication
+#   - AuthenticationMethods: permitted authentication methods
+#   - PasswordAuthentication: set to no to disable password authentication
+#   - UsePAM: set to no to disable all PAM authentication, also disables PasswordAuthentication when set to no
+AuthenticationMethods publickey
 PasswordAuthentication no
-PermitRootLogin no
-```
+UsePAM no
 
+# PAM authentication enabled to make password authentication available
+# remove this if password authentication is not needed
+#UsePAM yes
+
+# challenge-response authentication backend it not configured by default
+# therefore, it is set to "no" by default to avoid the use of an unconfigured backend
+ChallengeResponseAuthentication no
+
+# set maximum authentication retries to prevent brute force attacks
+MaxAuthTries 3
+
+# disallow connecting using empty passwords
+PermitEmptyPasswords no
+
+# prevent root from being logged in via SSH
+PermitRootLogin no
+
+# enable pubkey authentication
+PubkeyAuthentication yes
+
+########## Cryptography ##########
+
+# explicitly define cryptography algorithms to avoid the use of weak algorithms
+# AES-CTR and Chacha20-Poly1305 modes have been removed to mitigate the Terrapin attack
+#   https://terrapin-attack.com/
+Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com
+HostKeyAlgorithms rsa-sha2-512,rsa-sha2-256,ssh-ed25519
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+
+# only use host keys with secure HostKeyAlgorithms
+# omit the ECDSA key since it is only used in conjunction with the NIST P-curves
+HostKey /etc/ssh/ssh_host_ed25519_key
+#HostKey /etc/ssh/ssh_host_rsa_key
+
+# short moduli should be deactivated before enabling the use of diffie-hellman-group-exchange-sha256
+#   see this link for more details: https://github.com/k4yt3x/sshd_config#deactivating-short-diffie-hellman-moduli
+# AES-CTR and Chacha20-Poly1305 modes have been removed to mitigate the Terrapin attack
+#   https://terrapin-attack.com/
+# ecdh-sha2-nistp* algorithms have been removed due to concerns around NIST P-curves' design
+#   https://github.com/jtesta/ssh-audit/issues/213#issuecomment-1774204745
+KexAlgorithms sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group18-sha512,diffie-hellman-group16-sha512
+
+########## Connection Preferences ##########
+
+# number of client alive messages sent without client responding
+ClientAliveCountMax 2
+
+# send a keepalive message to the client when the session has been idle for 300 seconds
+# this prevents/detects connection timeouts
+ClientAliveInterval 300
+
+# compression before encryption might cause security issues
+Compression no
+
+# prevent SSH trust relationships from allowing lateral movements
+IgnoreRhosts yes
+
+# log verbosely for additional information
+LogLevel VERBOSE
+
+# allow a maximum of two multiplexed sessions over a single TCP connection
+MaxSessions 2
+
+# enforce SSH server to only use SSH protocol version 2
+# SSHv1 contains security issues and should be avoided at all costs
+# SSHv1 is disabled by default after OpenSSH 7.0, but this option is
+#   specified anyways to ensure this configuration file's compatibility
+#   with older versions of OpenSSH server
+Protocol 2
+
+# let ClientAliveInterval handle keepalive
+TCPKeepAlive no
+
+# disable reverse DNS lookups
+UseDNS no
+
+# Log sftp level file access (read/write/etc.) that would not be easily logged otherwise.
+# Source:
+#   https://infosec.mozilla.org/guidelines/openssh#modern-openssh-67
+Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO
+```
 ```bash
 # Restart SSH
 sudo service ssh restart
