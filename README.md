@@ -1129,6 +1129,9 @@ sudo snap install lnav
 # and vim key bindings for navigation (hjkl, gg, GG, / for search, etc).
 cd /var/log
 sudo lnav .
+
+# How to copy files using the SSH protocol.
+rsync --recursive --progress nsustain:/home/soobinrho/deploy-nsustain.com/example ./
 ```
 
 <br>
