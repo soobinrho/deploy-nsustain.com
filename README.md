@@ -1038,8 +1038,9 @@ https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_
 While I use `rsyslog` for storing and relaying logs to my centralized logging server, "the `journald` daemon is the primary tool for troubleshooting," and "the native journal file format, which is a structured and indexed binary file, improves searching and provides faster operation."
 
 > [!warning]
-> I use `journald` strictly when I'm SSH'ing to my application server because `journald` data is not persistent.
-> `rsyslog` is in charge of storing all logs in files, while "the journal data is stored in memory and lost between reboots."
+> I use `journald` only when I'm SSH'ing to my application server, and use `rsyslog` files in the logging server.
+> While `journald` data is not persistent, `rsyslog` stores all logs.
+> "The journal data is stored in memory and lost between reboots."
 > 
 > Since the logging server is receiving the logs remotely from the application server, the logging server's `journald` won't show you the logs.
 > Instead, if I'm SSH'ing to the logging server, I would use `lnav` to see the `rsyslog` log files directly at `/var/log/remote`.
