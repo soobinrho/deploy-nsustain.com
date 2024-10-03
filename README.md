@@ -1109,7 +1109,7 @@ This makes it possible to set up a system to automatically store archives daily 
 ```bash
 # How to re-deploy whenever there's change to source code.
 cd ~/deploy-nsustain.com
-docker compose up --build --force-recreate
+docker compose up --build --force-recreate -d
 
 # How to update all git submodules (required for first time).
 git submodule update --init --recursive
