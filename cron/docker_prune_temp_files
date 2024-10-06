@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+docker system prune --all --force | \
+	xargs logger --id --priority user.info -t dockerPrune
+
+if [ $? -eq 0 ]; then
+	logger --id --priority user.info -t dockerPrune "Docker prune success (/var/lib/docker/overlay2)."
+else
+	logger --id --priority user.err -t dockerPrune "Docker prune error."
+fi

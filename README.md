@@ -725,14 +725,19 @@ docker compose build
 docker compose up -d
 
 # Issue a SSL/TLS certificate using Letsencrypt.
-./certbot_runner
+./cron/certbot_runner
 
 # Set up a cron job for certbot renewal.
 # This cron job is set to run every day. The `certbot` is smart enough
 # to only renew the certificate when it is about to expire.
 # Source:
 #   https://stackoverflow.com/a/66638930
-sudo ln -s /home/soobinrho/deploy-nsustain.com/certbot_runner /etc/cron.daily/certbot_runner
+sudo ln -s /home/soobinrho/deploy-nsustain.com/cron/certbot_runner /etc/cron.daily/certbot_runner
+
+# Docker stores various temporary files, such as filesystem layers at
+# `/var/lib/docker/overlay2`, and this can grow fast -- e.g. 70GB in a week.
+# So, set up a cron job to clean this daily.
+sudo ln -s /home/soobinrho/deploy-nsustain.com/cron/docker_prune_temp_files /etc/cron.daily/docker_prune_temp_files
 ```
 
 <br>
@@ -765,7 +770,7 @@ sudo tarsnap-keymgmt -w \
 # "Don't apply any compression (gzip, bzip2, zip, tar.gz, etc.) to your
 # data -- Tarsnap itself will compress data after it performs
 # deduplication.
-sudo ln -s /home/soobinrho/deploy-nsustain.com/tarsnap_runner /etc/cron.daily/tarsnap_runner
+sudo ln -s /home/soobinrho/deploy-nsustain.com/cron/tarsnap_runner /etc/cron.daily/tarsnap_runner
 
 # How to check how much data would be uploaded after deduplication and compression.
 sudo tarsnap -c -v -f testbackup --dry-run --print-stats --humanize-numbers /usr/home
