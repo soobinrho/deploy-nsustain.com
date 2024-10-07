@@ -41,10 +41,12 @@ services:
       context: ./BeeMovr
       dockerfile: Dockerfile.beemovr
     restart: unless-stopped
-    networks:
-      - back-end
     expose:
       - 3000  # used by Node (pnpm)
+    networks:
+      - back-end
+    volumes:
+      - beemovr-database:/app/database
 
   goodlifefarms:
     container_name: goodlifefarms
@@ -120,6 +122,9 @@ volumes:
   mariadb-data:
     external: true
     name: mariadb-data
+  beemovr-database:
+    external: true
+    name: beemovr-database
 
 # "The presence of these objects is sufficient to define them"
 # Source:
