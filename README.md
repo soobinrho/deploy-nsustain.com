@@ -533,6 +533,10 @@ docker compose down
 sudo service docker restart
 docker compose up -d
 
+# If it exits with an error saying that there's no volume,
+# go to `deploy-nsustain.com/compose.yaml` and change all
+# `external: true` to `external:false`.
+
 # Confirm Docker's logging driver is correctly configured to syslog.
 docker inspect <containerName> | grep -A 5 LogConfig
 
