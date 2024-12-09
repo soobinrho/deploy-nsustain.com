@@ -2,8 +2,8 @@
 
 <br>
 
-> Nsustain is for anyone who loves the e[N]vironment and [sustain]ability.
-> Anyone is welcome to join us if you'd like to volunteer to code for people who work in the field and write something that will have a direct impact.
+> Nsustain is a group of volunteer programmers who love the e[N]vironment and [sustain]ability.
+> We write code for whoever needs our code (researchers, farmers, doctors, etc) as long as their work is realted to the environmental sustainability.
 
 <br>
 
