@@ -23,7 +23,7 @@
 | ---- | ---- |
 | ***Hetzner*** | One of the best VPS service providers in the world. Hosts both of my application server and logging server. I like it because it's affordable and pleasant to use (creating new servers, applying firewalls, etc). $8 per month for my application server. $4 per month for my logging server.  |
 | ***rsyslog*** | "Rocket-fast System for Log Processing." Aggregates all my `auth.log`, other system logs, and Docker container logs. Relays them to my central logging server, which is soley used for logging purposes with no other exposed services. This way, we can ensure the integrity of the logs even if my application server gets compromised due to zero-day vulnerabilities. |
-| ***Stunnel*** | Listens to localhost TCP port `514` for `rsyslog` and tunnels all the logs to the central logging server via TCP port `6514` with SSL/TLS protocol. Although `rsyslog` supports SSL/TLS out of the box, it's only single-threaded.<sup>[1]</sup> So, I use the TCP protocol in `rsyslog`, which has great support for multithreading, and use `Stunnel` to implement SSl/TCP protocol for encryption. |
+| ***Stunnel*** | Listens to localhost TCP port `514` for `rsyslog` and tunnels all the logs to the central logging server via TCP port `6514` with SSL/TLS protocol. Although `rsyslog` supports SSL/TLS out of the box, it's only single-threaded.<sup>[1]</sup> So, I use the TCP protocol in `rsyslog`, which has great support for multithreading, and use `Stunnel` to implement the SSl/TCP protocol for encryption. |
 | ***Tarsnap*** | One of the most, if not the most, secure backup services. `tarsnap -c -v -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" /var/lib/docker/volumes` deduplicates, compresses, and encrypts the data to their AWS backup server. I use `Tarsnap` for scheduled backups with `cron`. $0.25 per GB per month of storage. $0.25 per GB of bandwith. Less than $1 per month total. |
 
 <sub>[1] https://coders-home.de/en/set-up-an-rsyslog-server-with-multithreaded-tls-encryption-using-stunnel-1245.html</sub>
@@ -31,7 +31,7 @@
 <br>
 
 > [!NOTE]  
-> `rsyslog` is a plaintext logging system,<sup>[2]</sup> while`journald` is a binary logging system.
+> `rsyslog` is a plaintext logging system,<sup>[2]</sup> while `journald` is a binary logging system.
 > `journald` and `rsyslog` complement each other.
 > While `rsyslog` is especially good at storing and relaying logs to a centralized logging server, `journald` is great at viewing and filtering logs for analysis.
 > I normally use `sudo lnav /var/log` to view logs from `rsyslog` for almost all tasks related to logs, but use `sudo journalctl -f <field name>=<field value>` for when I need to use filters.
