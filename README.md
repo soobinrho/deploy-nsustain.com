@@ -272,6 +272,8 @@ sudo ufw status
 # an extra layer of security.
 ```
 
+<br>
+
 ### 3. [Application Server] Configure Cloudflare Firewall.
 
 I noticed when I was looking at `sudo lnav /var/log/remote/nsustain/docker.log` that there are too many http attempts from botnets requesting for URL's that match known vulnerabilities.
