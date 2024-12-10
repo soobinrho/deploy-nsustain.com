@@ -11,7 +11,7 @@ docker compose exec nginx certbot certonly --text --non-interactive \
   -d nsustain.com \
   -d beemovr.nsustain.com \
   -d goodlifefarms.nsustain.com 2>&1 | \
-    xargs logger --id --priority user.info -t certbot 
+    logger --id --priority user.info -t certbot 
 
 if [ $? -eq 0 ]; then
 	logger --id --priority user.info -t certbot "Certbot SSL/TLS certificate renewal script success."

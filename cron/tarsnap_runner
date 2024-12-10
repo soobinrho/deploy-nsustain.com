@@ -7,7 +7,7 @@ find . -type f -name ".env*" | \
   -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
   --exclude *.example \
   /var/lib/docker/volumes/ 2>&1 | \
-    xargs logger --id --priority user.info -t tarsnap
+    logger --id --priority user.info -t tarsnap
 
 if [ $? -eq 0 ]; then
 	logger --id --priority user.info -t tarsnap "Tarsnap backup success."
