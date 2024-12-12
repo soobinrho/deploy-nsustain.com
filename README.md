@@ -665,18 +665,15 @@ sudo systemctl restart rsyslog
 
 <br>
 
-### 7. [Both] Configure `logrotate`.
+### 7. [Logging Server] Configure `logrotate`.
 
 ```bash
 cd /etc/logrotate.d
-for fileName in *; do sudo mv "${fileName}" "${fileName}.backup"; done
-sudo mkdir ../logrotate.d.backup
-sudo mv *.backup ../logrotate.d.backup/
 
-# This config means rotate `daily` and keep `365` copies of it.
+# This config means rotate `monthly` and keep `12` copies of it.
 # There will be 365 days worth of logs, and the oldest ones will
 # start to get deleted once 366th day is reached.
-sudo vim all
+sudo vim remote
 ```
 
 Copy and paste this to `/etc/logrotate.d/all`.
@@ -684,26 +681,9 @@ Copy and paste this to `/etc/logrotate.d/all`.
 ```
 # see "man logrotate" for detail
 
-/var/log/*.log {
-    su root adm
-    daily
-    rotate 365
-    copytruncate
-    compress
-    delaycompress
-    notifempty
-
-    # "If the log file is missing, go on to the next one without issuing
-    # an error message."
-    # Source:
-    #   https://access.redhat.com/solutions/646903
-    missingok
-}
-
 /var/log/remote/*/*.log {
-    su root adm
-    daily
-    rotate 365
+    monthly
+    rotate 12
     copytruncate
     compress
     delaycompress
@@ -716,7 +696,6 @@ Copy and paste this to `/etc/logrotate.d/all`.
     missingok
 }
 ```
-
 <br>
 
 ### 8. [Application Server] Run Docker Compose to deploy Nsustain.
