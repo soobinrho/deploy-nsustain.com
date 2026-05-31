@@ -43,25 +43,28 @@
 
 ```
 Application Server - 2 vCPU, 2GB RAM, 40 SSD. Ubuntu LTS | $7 per month
-Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS | $7 per month
+Logging and Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS | $7 per month
 ```
 
 <br>
 
-### 1. [Both] Add a non-root user and configure `sshd` for security.
+`[Both]` here means run the following commands in both the application server and the logging & monitoring server.
+
+<br>
+
+### 0. [Both] Set up dev tools.
 
 ```bash
+adduser soobinrho
+usermod -a -G sudo soobinrho
+su - soobinrho
+
 # Enable auto updates so that security patches are installed promptly.
 sudo apt install -y unattended-upgrades
 sudo dpkg-reconfigure -plow unattended-upgrades
 
 # Set UTC as timezone for all servers.
 sudo timedatectl set-timezone UTC
-
-# [Both] here means run the following commands in both the application
-# server and the monitoring server.
-adduser soobinrho
-usermod -a -G sudo soobinrho
 
 # By default on `journalctl`, users can only see logs limited to their own programs.
 # Adding to the administrators group `adm` allows you to see all logs.
@@ -75,9 +78,43 @@ mkdir /home/soobinrho/.ssh
 cp ~/.ssh/authorized_keys /home/soobinrho/.ssh/
 chown -R soobinrho:soobinrho /home/soobinrho/.ssh
 
-# Login to the new user.
-su - soobinrho
+# Glances is great for monitoring CPU / memory usage.
+sudo apt install glances
 
+# Install NCurses Disk Usage (ncdu).
+wget https://dev.yorhel.nl/download/ncdu-2.9.1-linux-x86_64.tar.gz
+tar xvf ./ncdu-2.9.1-linux-x86_64.tar.gz
+sudo chmod 755 ./ncdu
+mv ./ncdu ~/.local/bin/
+
+# Install Neovim.
+# Download .appimage from https://github.com/neovim/neovim/releases
+sudo chmod u+x nvim-linux-x86_64.appimage
+sudo mkdir -p /opt/nvim
+sudo mv nvim-linux-x86_64.appimage /opt/nvim/nvim
+```
+
+<br>
+
+Add this to `~/.bashrc`:
+
+```
+alias ncdu='ncdu --color dark-bg --show-percent --show-itemcount --group-directories-first'
+alias vim='nvim'
+
+export PATH="$PATH:~/.local/bin"
+export PATH="$PATH:/opt/nvim"
+```
+
+<br>
+
+Run `source ~/.bashrc`
+
+<br>
+
+### 1. [Both] Configure `sshd` for security.
+
+```bash
 # "All Diffie-Hellman moduli in use should be at least 3072-bit-long."
 # Source:
 #   https://infosec.mozilla.org/guidelines/openssh#modern-openssh-67
