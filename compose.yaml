@@ -1,6 +1,5 @@
 # ----------------------------------------------------------------
 # WHAT IS THIS FILE FOR?
-# https://nsustain.com = Flarum
 # https://BeeMovr.nsustain.com = BeeMovr
 # https://GoodLifeFarms.nsustain.com = Good Life Farms
 # ----------------------------------------------------------------
@@ -12,29 +11,6 @@
 #   https://kompose.io/conversion/#version-table
 version: "3.3"
 services:
-  flarum:
-    image: nsustain/flarum:latest
-    container_name: flarum
-    # Always restart the container, even after reboot
-    restart: unless-stopped
-    pull_policy: never
-    build:
-      context: ./nsustain.com/src/docker
-      dockerfile: Dockerfile.flarum
-    depends_on:
-      - mariadb
-    expose:
-      - 9000  # used by PHP-FPM
-    networks:
-      - back-end
-    volumes:
-      # These are the data files for the container.
-      # Location of these files:
-      #   /var/lib/docker/volumes/...
-      - flarum-data:/var/www/html/flarum
-    env_file:
-     - ./nsustain.com/src/docker/.env_flarum
-
   beemovr:
     container_name: beemovr
     build:
@@ -77,7 +53,6 @@ services:
     networks:
       - back-end
     volumes:
-      - flarum-data:/var/www/html/flarum
       - ./configs_nginx/nginx.conf:/etc/nginx/nginx.conf
 
       # When you first run our image, these volumes will
@@ -95,33 +70,13 @@ services:
       - -g
       - daemon off;
 
-  mariadb:
-    image: mariadb:latest
-    container_name: mariadb
-    restart: unless-stopped
-    pull_policy: always
-    expose:
-      - 3306  # used by MariaDB
-    networks:
-      - back-end
-    volumes:
-      - mariadb-data:/var/lib/mysql
-    env_file:
-     - ./nsustain.com/src/docker/.env_mariadb
-
 volumes:
-  flarum-data:
-    external: true
-    name: flarum-data
   letsencrypt-data:
     external: true
     name: letsencrypt-data
   letsencrypt-lockfiles:
     external: true
     name: letsencrypt-lockfiles
-  mariadb-data:
-    external: true
-    name: mariadb-data
   beemovr-database:
     external: true
     name: beemovr-database
