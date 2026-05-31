@@ -55,8 +55,8 @@ Monitoring Server - 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS | $7 per month
 sudo apt install -y unattended-upgrades
 sudo dpkg-reconfigure -plow unattended-upgrades
 
-# Set timezone so that log times match with each other.
- sudo timedatectl set-timezone "America/Chicago"
+# Set UTC as timezone for all servers.
+sudo timedatectl set-timezone UTC
 
 # [Both] here means run the following commands in both the application
 # server and the monitoring server.
@@ -700,9 +700,10 @@ Copy and paste this to `/etc/logrotate.d/all`.
 ### 8. [Application Server] Run Docker Compose to deploy Nsustain.
 
 ```bash
-cd ~/
-git clone https://github.com/soobinrho/deploy-nsustain.com.git
+cd ~
+git clone https://github.com/soobinrho/deploy-nsustain.com
 cd deploy-nsustain.com
+git submodule update --init --recursive
 docker compose build
 docker compose up -d
 
