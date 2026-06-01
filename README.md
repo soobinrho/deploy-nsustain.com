@@ -56,7 +56,17 @@ Logging and Monitoring Server = 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS | $7 per m
 
 ```bash
 adduser soobinrho
+
+# By default on `journalctl`, users can only see logs limited to their own programs.
+# Adding to the administrators group `adm` allows you to see all logs.
+usermod -a -G adm soobinrho
 usermod -a -G sudo soobinrho
+
+# Copy the authorized ssh pub key from root to new user.
+mkdir /home/soobinrho/.ssh
+cp ~/.ssh/authorized_keys /home/soobinrho/.ssh/
+chown -R soobinrho:soobinrho /home/soobinrho/.ssh
+
 su - soobinrho
 
 # Enable auto updates so that security patches are installed promptly.
@@ -66,17 +76,8 @@ sudo dpkg-reconfigure -plow unattended-upgrades
 # Set UTC as timezone for all servers.
 sudo timedatectl set-timezone UTC
 
-# By default on `journalctl`, users can only see logs limited to their own programs.
-# Adding to the administrators group `adm` allows you to see all logs.
-usermod -a -G adm soobinrho
-
 # Change the hostname if desired.
-hostnamectl set-hostname newHostName
-
-# Copy the authorized ssh pub key from root to new user.
-mkdir /home/soobinrho/.ssh
-cp ~/.ssh/authorized_keys /home/soobinrho/.ssh/
-chown -R soobinrho:soobinrho /home/soobinrho/.ssh
+sudo hostnamectl set-hostname newHostName
 
 # Glances is great for monitoring CPU / memory usage.
 sudo apt install glances
