@@ -82,6 +82,9 @@ sudo hostnamectl set-hostname newHostName
 # Glances is great for monitoring CPU / memory usage.
 sudo apt install glances
 
+# Install lnav: the logfile navigator.
+sudo snap install lnav
+
 # Install NCurses Disk Usage (ncdu).
 wget https://dev.yorhel.nl/download/ncdu-2.9.1-linux-x86_64.tar.gz
 tar xvf ./ncdu-2.9.1-linux-x86_64.tar.gz
@@ -1151,9 +1154,6 @@ curl https://ipinfo.io/ip
 
 # How to see which process is listening on port 80.
 sudo netstat -pna | grep 80
-
-# Install lnav: the logfile navigator.
-sudo snap install lnav
 
 # How to read logs. Automatically follows all the log files in
 # the selected directory in real time, and it does so with color coding
