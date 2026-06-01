@@ -126,7 +126,7 @@ sudo awk '$5 >= 3071' /etc/ssh/moduli > ~/moduli.tmp && sudo mv ~/moduli.tmp /et
 
 # Test ssh connection to the new user.
 # Then, make sure sshd is securely configured.
-sudo mv /etc/ssh/sshd_confg /etc/ssh/sshd_config.backup
+sudo mv /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
 sudo vim /etc/ssh/sshd_config
 ```
 
