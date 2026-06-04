@@ -42,8 +42,8 @@
 ## Deployment Code
 
 ```
-Application Server = 3 vCPU, 4GB RAM, 80GB SSD. Ubuntu LTS | $14 per month
-Logging and Monitoring Server = 2 vCPU, 2GB RAM, 40GB SSD. Ubuntu LTS | $7 per month
+Application Server = 4 vCPU, 8GB RAM, 80GB SSD. Ubuntu LTS x64 | $9 per month
+Logging and Monitoring Server = 2 vCPU, 4GB RAM, 40GB SSD. Ubuntu LTS x64 | $7 per month
 ```
 
 <br>
