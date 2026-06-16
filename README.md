@@ -118,7 +118,7 @@ Run `source ~/.bashrc`
 
 ### 1. [Both] Configure `sshd` for security.
 
-Follow instructions at https://www.ssh-audit.com/hardening_guides.html
+Follow instructions at https://www.ssh-audit.com/hardening_guides.html and https://infosec.mozilla.org/guidelines/openssh.html
 
 <br>
 
