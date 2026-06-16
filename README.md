@@ -120,6 +120,15 @@ Run `source ~/.bashrc`
 
 Follow instructions at https://www.ssh-audit.com/hardening_guides.html and https://infosec.mozilla.org/guidelines/openssh.html
 
+```bash
+# Follow the guideline as root.
+sudo su -
+
+# After implementing the configs, restart sshd.
+sshd -t
+service ssh restart
+```
+
 <br>
 
 ### 2. [Application Server] Configure firewall.
