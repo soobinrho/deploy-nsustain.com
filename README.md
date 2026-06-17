@@ -43,7 +43,7 @@
 
 ```
 Application Server = 4 vCPU, 8GB RAM, 80GB SSD. Ubuntu LTS x64 | $9 per month
-Logging and Monitoring Server = 2 vCPU, 4GB RAM, 40GB SSD. Ubuntu LTS x64 | $7 per month
+Logging and Monitoring Server = 2 vCPU, 4GB RAM, 40GB SSD. Ubuntu LTS x64 | $5 per month
 ```
 
 <br>
